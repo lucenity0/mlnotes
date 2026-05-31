@@ -1,0 +1,3310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning Notes — 23CS6PCMAL</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1525;
+  --bg3: #161d30;
+  --card: #1a2238;
+  --border: #243050;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --accent3: #10b981;
+  --accent4: #f59e0b;
+  --accent5: #ef4444;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --heading: #f8fafc;
+  --glow: 0 0 20px rgba(0,212,255,0.15);
+  --glow2: 0 0 20px rgba(124,58,237,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 280px;
+  height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-track { background: transparent; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, #0f1525 0%, #1a0e2e 100%);
+}
+.sidebar-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.sidebar-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nav-section { padding: 10px 0; }
+.nav-unit-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 20px 4px;
+}
+.nav-item {
+  display: block;
+  padding: 7px 20px 7px 28px;
+  font-size: 12.5px;
+  color: var(--text2);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.nav-item:hover { color: var(--accent); background: rgba(0,212,255,0.05); border-left-color: var(--accent); }
+.nav-item.active { color: var(--accent); background: rgba(0,212,255,0.08); border-left-color: var(--accent); }
+.nav-unit-header {
+  display: block;
+  padding: 8px 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--heading);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-unit-header:hover { color: var(--accent); border-left-color: var(--accent); }
+
+/* ── MAIN ── */
+#main {
+  margin-left: 280px;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a0e2e 50%, #0a1a2e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 64px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 200px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--heading);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 600px;
+  line-height: 1.7;
+}
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hero-tag span { color: var(--accent3); }
+
+/* ── CONTENT ── */
+.content-wrap { padding: 48px 60px; }
+
+/* ── SECTION ── */
+.unit-section {
+  margin-bottom: 72px;
+}
+.unit-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 20px 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.unit-banner::after {
+  content: '';
+  position: absolute;
+  right: -50px; top: -50px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 70%);
+}
+.unit-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.2);
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.unit-banner h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--heading);
+}
+.unit-banner p { font-size: 13px; color: var(--text3); margin-top: 2px; }
+
+.topic-section { margin-bottom: 48px; }
+.topic-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--heading);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.topic-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px; height: 20px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.sub-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 20px 0 10px;
+}
+
+p { margin-bottom: 12px; color: var(--text2); }
+strong { color: var(--heading); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--heading);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.tag-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+.tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+.tag-green { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+.tag-orange { background: rgba(245,158,11,0.1); color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
+.tag-red { background: rgba(239,68,68,0.1); color: var(--accent5); border: 1px solid rgba(239,68,68,0.2); }
+
+/* ── FORMULA BOX ── */
+.formula-box {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #93c5fd;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.formula-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ── SOLVED EXAMPLE ── */
+.solved {
+  background: rgba(16,185,129,0.04);
+  border: 1px solid rgba(16,185,129,0.15);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+.solved-header {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.solved-header::before { content: '▶'; font-size: 10px; }
+.solved-step {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.solved-step strong { color: var(--accent3); }
+
+/* ── QP SECTION ── */
+.qp-section {
+  background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(0,212,255,0.02));
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.qp-paper-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(124,58,237,0.2);
+}
+.qp-question {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.qp-q {
+  font-size: 13.5px;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.qp-q strong { color: var(--accent4); }
+.qp-ans {
+  padding: 12px 16px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.qp-ans .formula-box { margin: 8px 0; font-size: 12px; }
+
+/* ── TABLE ── */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 13px;
+}
+.tbl th {
+  background: var(--bg3);
+  color: var(--accent);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 10px 14px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+.tbl td {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+}
+.tbl tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+/* ── LIST ── */
+ul.bullets, ol.steps {
+  padding-left: 20px;
+  margin: 10px 0;
+  color: var(--text2);
+}
+ul.bullets li, ol.steps li {
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+ul.bullets li::marker { color: var(--accent); }
+ol.steps li::marker { color: var(--accent); font-family: 'JetBrains Mono'; font-size: 12px; }
+
+/* ── GRID ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 14px 0; }
+@media (max-width: 900px) {
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+}
+
+/* ── CALLOUT ── */
+.callout {
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin: 14px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.callout-info { background: rgba(0,212,255,0.06); border-left: 3px solid var(--accent); color: var(--text2); }
+.callout-warn { background: rgba(245,158,11,0.06); border-left: 3px solid var(--accent4); color: var(--text2); }
+.callout-success { background: rgba(16,185,129,0.06); border-left: 3px solid var(--accent3); color: var(--text2); }
+.callout-danger { background: rgba(239,68,68,0.06); border-left: 3px solid var(--accent5); color: var(--text2); }
+
+/* ── TOGGLE ── */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 200;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 18px;
+}
+
+@media (max-width: 800px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; }
+  .hamburger { display: block; }
+  .hero { padding: 80px 24px 48px; }
+  .hero h1 { font-size: 32px; }
+  .content-wrap { padding: 32px 24px; }
+}
+
+/* ── PROGRESS BAR ── */
+#progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); z-index: 999; transition: width 0.1s; }
+
+/* ── ANCHOR ── */
+h2[id], h3[id], .topic-section[id] { scroll-margin-top: 24px; }
+
+/* ── UNIT COLORS ── */
+.u1 { border-left-color: #00d4ff; }
+.u2 { border-left-color: #7c3aed; }
+.u3 { border-left-color: #10b981; }
+.u4 { border-left-color: #f59e0b; }
+.u5 { border-left-color: #ef4444; }
+
+.num1 { background: rgba(0,212,255,0.1); color: #00d4ff; }
+.num2 { background: rgba(124,58,237,0.1); color: #a78bfa; }
+.num3 { background: rgba(16,185,129,0.1); color: #10b981; }
+.num4 { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.num5 { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+.unit-banner.u1 { border-left-color: #00d4ff; }
+.unit-banner.u2 { border-left-color: #7c3aed; }
+.unit-banner.u3 { border-left-color: #10b981; }
+.unit-banner.u4 { border-left-color: #f59e0b; }
+.unit-banner.u5 { border-left-color: #ef4444; }
+</style>
+<style id="bda-theme">
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f7f5;
+  --bg3: #efefed;
+  --border: #e0e0dc;
+  --border2: #c8c8c4;
+  --text: #111111;
+  --text2: #444444;
+  --text3: #777777;
+  --accent: #111111;
+  --yellow: #f5e642;
+  --yellow-bg: #fefde8;
+  --yellow-border: #e8d800;
+  --blue: #1a6ef7;
+  --blue-bg: #edf3ff;
+  --blue-border: #93b8fa;
+  --green: #178a4a;
+  --green-bg: #edfaf3;
+  --green-border: #7dd4a8;
+  --red: #cc2222;
+  --red-bg: #fff1f1;
+  --red-border: #f5a0a0;
+  --orange: #d46a00;
+  --orange-bg: #fff7ed;
+  --orange-border: #f6c98a;
+  --sidebar-w: 260px;
+  --code-bg: #1a1a1a;
+  --code-text: #e8e8e0;
+  --card: var(--bg2);
+  --accent2: var(--blue);
+  --accent3: var(--green);
+  --accent4: var(--orange);
+  --accent5: var(--red);
+  --heading: var(--text);
+  --glow: 0 0 0 rgba(0,0,0,0);
+  --glow2: 0 0 0 rgba(0,0,0,0);
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  font-size: 15px;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: var(--sidebar-w);
+  background: var(--text);
+  color: #fff;
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+}
+#sidebar::-webkit-scrollbar-thumb { background: #444; }
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 90;
+}
+
+.sidebar-header {
+  border-bottom: 1px solid #2a2a2a;
+  background: none;
+}
+.sidebar-title {
+  font-family: 'EB Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.sidebar-sub {
+  font-size: 11px;
+  color: #aaa;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+}
+
+.sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid #222;
+}
+.sidebar-search input {
+  width: 100%;
+  background: #222;
+  border: 1px solid #333;
+  color: #eee;
+  padding: 7px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+.sidebar-search input::placeholder { color: #666; }
+.sidebar-search input:focus { border-color: #555; }
+
+.nav-section { padding: 8px 0; }
+.nav-unit-label,
+.nav-section-label {
+  padding: 8px 20px 4px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #666;
+  font-weight: 500;
+}
+.nav-item {
+  padding: 7px 20px;
+  color: #bbb;
+  font-size: 13px;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+.nav-item:hover { color: #fff; background: #1e1e1e; border-left-color: #555; }
+.nav-item.active { color: #fff; border-left-color: var(--yellow); background: #1a1a1a; }
+.nav-item.sub { padding-left: 32px; font-size: 12px; }
+.nav-item.special { color: var(--yellow); }
+.nav-unit-header { color: #ddd; font-size: 12px; font-weight: 600; }
+
+/* ── MAIN ── */
+#main {
+  margin-left: var(--sidebar-w);
+  background: var(--bg);
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+}
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.menu-toggle {
+  display: none;
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+.menu-toggle span {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+}
+.menu-toggle span::before,
+.menu-toggle span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+}
+.menu-toggle span::before { top: -6px; }
+.menu-toggle span::after { top: 6px; }
+.topbar-breadcrumb {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.topbar-breadcrumb span { color: var(--text2); }
+.exam-badge {
+  background: var(--yellow);
+  color: #111;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--text);
+  color: #fff;
+  border-radius: 8px;
+  padding: 36px 40px;
+  margin: 24px auto 40px;
+  max-width: 960px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  background: var(--yellow);
+  border-radius: 50%;
+  opacity: 0.07;
+}
+.hero::after { content: none; }
+.hero-badge {
+  display: inline-block;
+  border: 1px solid #333;
+  color: var(--yellow);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-family: 'EB Garamond', serif;
+  font-size: 34px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.hero h1 span { color: #fff; }
+.hero p {
+  color: #bbb;
+  font-size: 14px;
+  max-width: 600px;
+  line-height: 1.6;
+}
+.hero-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.hero-tag {
+  border: 1px solid #333;
+  color: #999;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.hero-tag span { color: #bbb; }
+
+/* ── CONTENT ── */
+.page { display: none; }
+.page.active { display: block; }
+
+.content-wrap {
+  padding: 40px 48px 80px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.section-h { margin: 28px 0 16px; }
+.section-h h3 {
+  font-family: 'EB Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 8px;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.card-link:hover { border-color: var(--text); }
+
+/* ── VIEWER ── */
+#viewer-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+#viewer-modal.open { display: flex; }
+#viewer-container {
+  background: #fff;
+  border-radius: 8px;
+  width: 90%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+#viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+#viewer-title { font-size: 14px; font-weight: 600; color: var(--text); }
+#viewer-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+#viewer-download {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+#viewer-download:hover { opacity: 0.9; }
+#viewer-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text3);
+}
+#viewer-close:hover { color: var(--text); }
+#viewer-frame {
+  flex: 1;
+  border: none;
+  width: 100%;
+}
+#viewer-message {
+  display: none;
+  flex: 1;
+  background: #f5f5f5;
+  color: #333;
+  padding: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+#viewer-message.show { display: flex; }
+#viewer-message p { font-size: 16px; margin: 0; }
+
+/* ── SECTION ── */
+.unit-section { margin-bottom: 48px; }
+
+.unit-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--text);
+  border-radius: 6px;
+  position: relative;
+}
+.unit-banner::after { content: none; }
+.unit-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  padding: 4px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.unit-banner h2 {
+  font-family: 'EB Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+}
+.unit-banner p { font-size: 13px; color: var(--text3); margin-top: 2px; }
+
+.topic-section { margin-bottom: 36px; }
+.topic-title {
+  font-family: 'EB Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.topic-title::before { content: none; }
+
+.sub-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 8px;
+  color: var(--text);
+}
+
+p { color: var(--text2); }
+strong { color: var(--text); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card p, .card li { font-size: 14px; color: var(--text2); }
+.card ul, .card ol { padding-left: 20px; }
+.card li { margin-bottom: 4px; }
+
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
+.tag-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+.tag-purple { background: #f4f0ff; color: #6a4bc8; border: 1px solid #d7c9ff; }
+.tag-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.tag-orange { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); }
+.tag-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+
+/* ── CODE / FORMULA ── */
+.formula-box {
+  background: var(--code-bg);
+  border: 1px solid #2a2a2a;
+  border-left: 3px solid var(--yellow);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--code-text);
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.formula-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--yellow);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+/* ── SOLVED EXAMPLE ── */
+.solved {
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+.solved-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.solved-header::before { content: '▶'; font-size: 10px; }
+.solved-step {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13.5px;
+  color: var(--text2);
+}
+.solved-step strong { color: var(--green); }
+
+/* ── QP SECTION ── */
+.qp-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+.qp-paper-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.qp-question {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.qp-q {
+  font-size: 13.5px;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.qp-q strong { color: var(--orange); }
+.qp-ans {
+  padding: 12px 16px;
+  background: #fafafa;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.qp-ans .formula-box { margin: 8px 0; font-size: 12px; }
+
+/* ── TABLE ── */
+.tbl th {
+  background: var(--text);
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  border: none;
+}
+.tbl td {
+  border: none;
+  border-bottom: 1px solid var(--border);
+}
+.tbl tr:nth-child(even) td { background: var(--bg2); }
+.tbl tr:hover td { background: var(--bg3); }
+
+/* ── LIST ── */
+ul.bullets li::marker { color: var(--text); }
+ol.steps li::marker { color: var(--text); }
+
+/* ── CALLOUT ── */
+.callout {
+  border-radius: 4px;
+  border-left: 3px solid;
+  font-size: 14px;
+}
+.callout-info { background: var(--blue-bg); border-color: var(--blue-border); color: #1a3a7a; }
+.callout-warn { background: var(--orange-bg); border-color: var(--orange-border); color: #6a3000; }
+.callout-success { background: var(--green-bg); border-color: var(--green-border); color: #0d4a2a; }
+.callout-danger { background: var(--red-bg); border-color: var(--red-border); color: #6a1010; }
+
+/* ── UNIT COLORS ── */
+.u1 { border-left-color: var(--blue); }
+.u2 { border-left-color: #5f4dd9; }
+.u3 { border-left-color: var(--green); }
+.u4 { border-left-color: var(--orange); }
+.u5 { border-left-color: var(--red); }
+.num1 { background: var(--blue-bg); color: var(--blue); }
+.num2 { background: #f0e9ff; color: #5f4dd9; }
+.num3 { background: var(--green-bg); color: var(--green); }
+.num4 { background: var(--orange-bg); color: var(--orange); }
+.num5 { background: var(--red-bg); color: var(--red); }
+.unit-banner.u1 { border-left-color: var(--blue); }
+.unit-banner.u2 { border-left-color: #5f4dd9; }
+.unit-banner.u3 { border-left-color: var(--green); }
+.unit-banner.u4 { border-left-color: var(--orange); }
+.unit-banner.u5 { border-left-color: var(--red); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  #sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  #sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+  #main { margin-left: 0; }
+  .topbar { padding: 10px 20px; }
+  .menu-toggle { display: inline-flex; }
+  .hero { padding: 24px 20px; margin: 24px 20px 32px; }
+  .content-wrap { padding: 24px 20px 60px; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">ML Notes</div>
+    <div class="sidebar-sub">23CS6PCMAL · BMSCE VI Sem</div>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" id="searchInput" placeholder="Search topics..." oninput="searchNav(this.value)">
+  </div>
+  <div class="nav-section" id="navMenu">
+    <div class="nav-unit-label">Navigation</div>
+    <a href="#hero" class="nav-item">⌂ Overview</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Unit I</div>
+    <a href="#u1-intro" class="nav-item">Introduction to ML</a>
+    <a href="#u1-trad" class="nav-item">Traditional vs ML</a>
+    <a href="#u1-types" class="nav-item">Types of ML</a>
+    <a href="#u1-batch" class="nav-item">Batch & Online Learning</a>
+    <a href="#u1-instance" class="nav-item">Instance vs Model-Based</a>
+    <a href="#u1-challenges" class="nav-item">Main Challenges</a>
+    <a href="#u1-endtoend" class="nav-item">End-to-End ML Project</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Unit II</div>
+    <a href="#u2-linreg" class="nav-item">Linear Regression</a>
+    <a href="#u2-multreg" class="nav-item">Multiple Linear Regression</a>
+    <a href="#u2-logreg" class="nav-item">Logistic Regression</a>
+    <a href="#u2-knn" class="nav-item">K-Nearest Neighbors</a>
+    <a href="#u2-dtree" class="nav-item">Decision Trees (ID3)</a>
+    <a href="#u2-svm" class="nav-item">Support Vector Machines</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Unit III</div>
+    <a href="#u3-guidelines" class="nav-item">ML Experiment Guidelines</a>
+    <a href="#u3-cv" class="nav-item">Cross Validation</a>
+    <a href="#u3-metrics" class="nav-item">Performance Metrics</a>
+    <a href="#u3-confusion" class="nav-item">Confusion Matrix & ROC</a>
+    <a href="#u3-ttest" class="nav-item">Statistical Tests</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Unit IV</div>
+    <a href="#u4-ensemble" class="nav-item">Ensemble Learning</a>
+    <a href="#u4-bagging" class="nav-item">Bagging & Random Forest</a>
+    <a href="#u4-boosting" class="nav-item">Boosting & AdaBoost</a>
+    <a href="#u4-stacking" class="nav-item">Stacking & Voting</a>
+    <a href="#u4-clustering" class="nav-item">Clustering & K-Means</a>
+    <a href="#u4-pca" class="nav-item">Dimensionality Reduction (PCA)</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Unit V</div>
+    <a href="#u5-intro" class="nav-item">Intro to RL</a>
+    <a href="#u5-mdp" class="nav-item">Markov Decision Process</a>
+    <a href="#u5-qlearning" class="nav-item">Q-Learning</a>
+    <a href="#u5-td" class="nav-item">Temporal Difference</a>
+    <a href="#u5-active" class="nav-item">Active RL & Generalization</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Question Papers</div>
+    <a href="#qp-dec2025" class="nav-item">Dec 2025 / Jan 2026</a>
+    <a href="#qp-aug2025" class="nav-item">Aug / Sep 2025 Suppl.</a>
+    <a href="#qp-jun2025" class="nav-item">June 2025</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Sources</div>
+    <a href="#sources" class="nav-item">📚 Sources Index</a>
+    <a href="sources/ml_unit-1.pdf" class="nav-item sub">Unit 1 — ml_unit-1.pdf</a>
+    <a href="sources/ml_unit-2_1.pdf" class="nav-item sub">Unit 2 — ml_unit-2_1.pdf</a>
+    <a href="sources/ml_unit-2_2.pdf" class="nav-item sub">Unit 2 — ml_unit-2_2.pdf</a>
+    <a href="sources/Decision-tree.pdf" class="nav-item sub">Unit 2 — Decision-tree.pdf</a>
+    <a href="sources/SVM.pdf" class="nav-item sub">Unit 2 — SVM.pdf</a>
+    <a href="sources/SVM-Numerical_Prob.pdf" class="nav-item sub">Unit 2 — SVM-Numerical_Prob.pdf</a>
+    <a href="sources/ml_unit-3.pdf" class="nav-item sub">Unit 3 — ml_unit-3.pdf</a>
+    <a href="sources/ml_unit-4.pdf" class="nav-item sub">Unit 4 — ml_unit-4.pdf</a>
+    <a href="sources/Unit4.pdf" class="nav-item sub">Unit 4 — Unit4.pdf</a>
+    <a href="sources/dimensionality-reduction.pdf" class="nav-item sub">Unit 4 — dimensionality-reduction.pdf</a>
+    <a href="sources/ml_unit-5.pdf" class="nav-item sub">Unit 5 — ml_unit-5.pdf</a>
+    <a href="sources/23CS6PCMAL.pdf" class="nav-item sub">Course PDF — 23CS6PCMAL.pdf</a>
+    <a href="sources/23CS6PCMAL (1).pdf" class="nav-item sub">Course PDF — 23CS6PCMAL (1).pdf</a>
+    <a href="sources/23CS6PCMAL (2).pdf" class="nav-item sub">Course PDF — 23CS6PCMAL (2).pdf</a>
+    <a href="sources/23CS6PCMAL..pdf" class="nav-item sub">Course PDF — 23CS6PCMAL..pdf</a>
+  </div>
+</nav>
+
+<div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+<!-- MAIN -->
+<main id="main">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar">
+        <span></span>
+      </button>
+      <div class="topbar-breadcrumb" id="breadcrumb">ML / <span>Overview</span></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="exam-badge">Exam Ready</span>
+    </div>
+  </div>
+
+  <div id="page-overview" class="page active">
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero-badge">23CS6PCMAL · B.E. CSE Semester VI</div>
+      <h1>Machine <span>Learning</span><br>Complete Notes</h1>
+      <p>Comprehensive, exam-ready notes covering all 5 units — with detailed theory, formulas, worked numericals, and fully solved question papers from BMSCE examinations.</p>
+      <div class="hero-meta">
+        <div class="hero-tag">📚 <span>5 Units</span></div>
+        <div class="hero-tag">⏱ <span>40 Hours</span></div>
+        <div class="hero-tag">🧮 <span>Numericals Solved</span></div>
+        <div class="hero-tag">📝 <span>3 Question Papers</span></div>
+      </div>
+    </section>
+
+    <div class="content-wrap">
+      <div class="section-h"><h3><span class="icon">🎯</span> Quick Strategy</h3></div>
+      <div class="callout callout-info">
+        <strong>High ROI Path:</strong> Focus on Unit II (core algorithms) + Unit III (metrics/tests) first. Unit IV + V are scoring if you memorize workflows + solved numericals.
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">✅ What to master first</div>
+          <ul class="bullets">
+            <li>Linear + Logistic Regression equations & assumptions</li>
+            <li>KNN, Decision Trees, SVM core idea + pros/cons</li>
+            <li>Cross-validation, confusion matrix, ROC, t-test</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🧩 Problem-solving checklist</div>
+          <ul class="bullets">
+            <li>Write definition + diagram/flow</li>
+            <li>Add formula with symbols + short explanation</li>
+            <li>Include one example or mini calculation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-h"><h3><span class="icon">🧭</span> Unit Jumpstart</h3></div>
+      <div class="grid3">
+        <a class="card card-link" href="#u1-intro">
+          <div class="card-title">Unit I · Foundations</div>
+          <p>Start with ML basics, types, and challenges.</p>
+        </a>
+        <a class="card card-link" href="#u2-linreg">
+          <div class="card-title">Unit II · Supervised</div>
+          <p>Linear/Logistic Regression, KNN, Trees, SVM.</p>
+        </a>
+        <a class="card card-link" href="#u3-guidelines">
+          <div class="card-title">Unit III · Experiments</div>
+          <p>CV, metrics, confusion matrix, hypothesis tests.</p>
+        </a>
+        <a class="card card-link" href="#u4-ensemble">
+          <div class="card-title">Unit IV · Ensemble + Unsupervised</div>
+          <p>Bagging/Boosting, clustering, PCA.</p>
+        </a>
+        <a class="card card-link" href="#u5-intro">
+          <div class="card-title">Unit V · RL</div>
+          <p>MDP, Q-Learning, TD, active RL.</p>
+        </a>
+        <a class="card card-link" href="#qp-dec2025">
+          <div class="card-title">Question Papers</div>
+          <p>Fully solved university papers.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-unit1" class="page">
+  <div class="content-wrap">
+
+  <!-- ═══════════════ UNIT 1 ═══════════════ -->
+  <section class="unit-section" id="unit1">
+    <div class="unit-banner u1">
+      <div class="unit-num num1">UNIT I</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px"><h2>Introduction To Machine Learning</h2></div>
+        <p>ML Landscape · Types · Batch/Online · Instance/Model-Based · Challenges · End-to-End Projects</p>
+      </div>
+    </div>
+
+    <!-- 1.1 Intro to ML -->
+    <div class="topic-section" id="u1-intro">
+      <div class="topic-title">What is Machine Learning?</div>
+      <p>Machine Learning is a core sub-area of Artificial Intelligence (AI) where systems learn from data and improve their performance on tasks without being explicitly programmed. Instead of writing fixed rules, we feed data and let the machine discover patterns.</p>
+      <p>Formally, <strong>Arthur Samuel (1959)</strong> defined ML as: <em>"the field of study that gives computers the ability to learn without being explicitly programmed."</em></p>
+      <p>Tom Mitchell (1997) gave a formal definition: <em>"A computer program is said to learn from experience E with respect to some task T and some performance measure P, if its performance on T, as measured by P, improves with experience E."</em></p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">KEY INSIGHT</span></div>
+          <p>ML is at the intersection of <strong>Statistics</strong>, <strong>Computer Science</strong>, and <strong>Artificial Intelligence</strong>. It is also known as <em>predictive analytics</em> or <em>statistical learning</em>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">APPLICATIONS</span></div>
+          <ul class="bullets">
+            <li>Spam email detection</li>
+            <li>Medical image diagnosis (tumor detection)</li>
+            <li>Recommendation systems (Netflix, Amazon)</li>
+            <li>Self-driving cars, chatbots, fraud detection</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.2 Traditional vs ML -->
+    <div class="topic-section" id="u1-trad">
+      <div class="topic-title">Traditional Programming vs. Machine Learning</div>
+      <table class="tbl">
+        <tr><th>Aspect</th><th>Traditional Programming</th><th>Machine Learning</th></tr>
+        <tr><td>Approach</td><td>Data + Rules → Output</td><td>Data + Output → Rules (Model)</td></tr>
+        <tr><td>Rules</td><td>Written explicitly by programmer</td><td>Learned automatically from data</td></tr>
+        <tr><td>Adaptability</td><td>Cannot adapt to new patterns</td><td>Adapts as new data arrives</td></tr>
+        <tr><td>Example</td><td>if "free" in email → spam</td><td>Model learns spam patterns statistically</td></tr>
+        <tr><td>Scalability</td><td>Brittle — rules grow endlessly</td><td>Scales well with more data</td></tr>
+      </table>
+
+      <div class="callout callout-info">
+        <strong>Spam Filter Example:</strong> A rule-based system needs explicit rules like "if email contains 'win' → spam". But spammers use tricks like "fr33 m0ney". An ML model learns probabilistic patterns using NLP and adapts automatically to new spam techniques.
+      </div>
+
+      <p><strong>When to use ML:</strong></p>
+      <ul class="bullets">
+        <li>Problems requiring a lot of fine-tuning of long rule lists</li>
+        <li>Complex problems (image recognition, speech) with no good traditional solution</li>
+        <li>Fluctuating environments where data patterns shift over time</li>
+        <li>Getting insights about complex datasets (data mining)</li>
+      </ul>
+    </div>
+
+    <!-- 1.3 Types of ML -->
+    <div class="topic-section" id="u1-types">
+      <div class="topic-title">Types of Machine Learning</div>
+
+      <div class="sub-title">1. Supervised Learning</div>
+      <p>The training data includes <strong>desired outputs (labels)</strong>. The algorithm learns to map inputs to outputs.</p>
+      <ul class="bullets">
+        <li><strong>Classification:</strong> Predicting a category (spam/not spam, disease/healthy)</li>
+        <li><strong>Regression:</strong> Predicting a continuous value (house price, stock price)</li>
+      </ul>
+      <p><strong>Algorithms:</strong> Linear Regression, Logistic Regression, Decision Trees, SVM, KNN, Neural Networks, Random Forest</p>
+      <p><strong>Examples:</strong> Spam detection, tumor classification, stock price prediction, sentiment analysis</p>
+
+      <div class="sub-title">2. Unsupervised Learning</div>
+      <p>The model is trained on <strong>unlabeled data</strong>. The goal is to discover hidden patterns and structures.</p>
+      <ul class="bullets">
+        <li><strong>Clustering:</strong> K-Means, DBSCAN, Hierarchical Clustering</li>
+        <li><strong>Dimensionality Reduction:</strong> PCA, t-SNE, Autoencoders</li>
+        <li><strong>Association Rules:</strong> Apriori, Eclat (market basket analysis)</li>
+        <li><strong>Anomaly Detection:</strong> One-class SVM, Isolation Forest</li>
+      </ul>
+      <p><strong>Examples:</strong> Customer segmentation, anomaly detection in cybersecurity, recommender systems</p>
+
+      <div class="sub-title">3. Semi-supervised Learning</div>
+      <p>Uses a <strong>small portion of labeled data</strong> combined with a large amount of unlabeled data. The labeled data trains an initial model, which then assigns <em>pseudo-labels</em> to unlabeled data, and both are used together.</p>
+      <p><strong>Example:</strong> A hospital has 10,000 patient X-rays but only 500 are labeled by experts (expensive). Semi-supervised learning uses both labeled and unlabeled records.</p>
+
+      <div class="sub-title">4. Reinforcement Learning</div>
+      <p>An <strong>agent</strong> learns to make decisions by interacting with an <strong>environment</strong>, receiving <strong>rewards</strong> for good actions and penalties for bad ones. The goal is to maximize cumulative reward.</p>
+      <p><strong>Components:</strong> Agent, Environment, State (S), Action (A), Reward (R), Policy (π), Value Function (V)</p>
+      <p><strong>Examples:</strong> Training game-playing AIs (AlphaGo), robotic control, self-driving cars</p>
+
+      <table class="tbl">
+        <tr><th>Type</th><th>Data</th><th>Goal</th><th>Example</th></tr>
+        <tr><td>Supervised</td><td>Labeled</td><td>Predict output</td><td>Email spam classification</td></tr>
+        <tr><td>Unsupervised</td><td>Unlabeled</td><td>Discover structure</td><td>Customer segmentation</td></tr>
+        <tr><td>Semi-supervised</td><td>Partially labeled</td><td>Classify with limited labels</td><td>Medical image analysis</td></tr>
+        <tr><td>Reinforcement</td><td>Reward signals</td><td>Maximize reward</td><td>Game-playing agents</td></tr>
+      </table>
+    </div>
+
+    <!-- 1.4 Batch vs Online -->
+    <div class="topic-section" id="u1-batch">
+      <div class="topic-title">Batch Learning vs. Online Learning</div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">BATCH LEARNING</span></div>
+          <ul class="bullets">
+            <li>Model trained on the <strong>entire dataset at once</strong></li>
+            <li>Once trained, it does not update until retrained</li>
+            <li>Also called <em>offline learning</em></li>
+            <li>Requires significant computing resources during training</li>
+            <li>Model launched into production unchanged</li>
+            <li><strong>Use when:</strong> Data is static and complete</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">ONLINE LEARNING</span></div>
+          <ul class="bullets">
+            <li>Model updates <strong>incrementally</strong> as new data arrives</li>
+            <li>Great for streaming data (stock prices, weather)</li>
+            <li>Can discard old data after learning</li>
+            <li>Can train on huge datasets that don't fit in memory</li>
+            <li><strong>Learning rate</strong> controls how fast it adapts</li>
+            <li><strong>Use when:</strong> Data is continuous and changing</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <strong>Learning Rate in Online Learning:</strong> High learning rate → adapts quickly but forgets old data. Low learning rate → more stable but slower to adapt. Setting the right learning rate is crucial.
+      </div>
+    </div>
+
+    <!-- 1.5 Instance vs Model-Based -->
+    <div class="topic-section" id="u1-instance">
+      <div class="topic-title">Instance-Based vs. Model-Based Learning</div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-purple">INSTANCE-BASED</span></div>
+          <p>The model memorizes training examples and predicts by <strong>comparing new inputs to stored instances</strong> using a similarity measure (lazy learning).</p>
+          <p><strong>Examples:</strong> K-Nearest Neighbor (KNN), Case-Based Reasoning</p>
+          <p><strong>Advantage:</strong> Simple, no explicit training needed<br><strong>Disadvantage:</strong> Slow at prediction time, needs all data in memory</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">MODEL-BASED</span></div>
+          <p>Learns an internal representation (mathematical model) from training data and uses it for predictions. Generalizes from data by fitting parameters.</p>
+          <p><strong>Examples:</strong> Linear Regression, Neural Networks, Decision Trees</p>
+          <p><strong>Advantage:</strong> Fast at prediction, compact storage<br><strong>Disadvantage:</strong> Requires careful model selection</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.6 Challenges -->
+    <div class="topic-section" id="u1-challenges">
+      <div class="topic-title">Main Challenges of Machine Learning</div>
+
+      <div class="card">
+        <div class="card-title"><span class="tag tag-red">1. Insufficient Quantity of Training Data</span></div>
+        <p>ML algorithms need lots of data to learn effectively — thousands of examples for simple problems, millions for complex tasks like image/speech recognition. With too little data, models cannot generalize well.</p>
+        <p><em>Example: Training a deep learning model for rare bird species with only 100 images per species will lead to poor accuracy on new data.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="tag tag-orange">2. Non-Representative Training Data</span></div>
+        <p>If training data doesn't represent the real-world cases, the model is biased. This leads to poor generalization — either from <strong>sampling noise</strong> (too little data) or <strong>sampling bias</strong> (systematic flaws).</p>
+        <p><em>Example: A facial recognition system trained only on light-skinned faces fails on darker-skinned individuals.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="tag tag-red">3. Poor-Quality Data</span></div>
+        <p>Data full of errors, outliers, and noise makes it harder to find underlying patterns. Solutions include discarding or fixing outliers, filling missing values, and cleaning noise.</p>
+        <ul class="bullets">
+          <li><strong>Errors:</strong> Wrong values (age = 200, temperature = -500°C)</li>
+          <li><strong>Outliers:</strong> Unusual but possible (income = ₹50 crore)</li>
+          <li><strong>Noise:</strong> Random variation in sensor readings</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="tag tag-orange">4. Irrelevant Features (Feature Engineering)</span></div>
+        <p>"Garbage in, garbage out." Success depends on having <strong>good features</strong> — not too many irrelevant ones. Feature engineering involves: feature selection, feature extraction, and creating new features.</p>
+        <p><em>Example: Building a spam classifier but including font color instead of word features leads to poor results.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="tag tag-red">5. Overfitting</span></div>
+        <p>The model learns training data too well — including noise and random fluctuations — and fails to generalize to new data. Model is too complex relative to data.</p>
+        <ul class="bullets">
+          <li>Low training error, high test error</li>
+          <li>Solutions: Regularization, simpler model, more training data, dropout</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="tag tag-purple">6. Underfitting</span></div>
+        <p>The model is too simple to capture the complexity in the data. Poor performance on both training and test data.</p>
+        <ul class="bullets">
+          <li>High training error AND high test error</li>
+          <li>Solutions: More complex model, better features, reduce regularization</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-success">
+        <strong>Bias-Variance Tradeoff:</strong> Underfitting = High Bias. Overfitting = High Variance. The goal is to find the sweet spot — a model complex enough to capture patterns, but not so complex that it memorizes noise.
+      </div>
+    </div>
+
+    <!-- 1.7 End-to-End -->
+    <div class="topic-section" id="u1-endtoend">
+      <div class="topic-title">End-to-End Machine Learning Project</div>
+      <ol class="steps">
+        <li><strong>Frame the Problem:</strong> Define goals (classification/regression?), success metrics, existing solutions</li>
+        <li><strong>Get the Data:</strong> Download from sources like Kaggle, UCI, HuggingFace; check data size and type</li>
+        <li><strong>Explore & Visualize the Data:</strong> Histograms, scatter plots, correlation matrices, look for patterns and anomalies</li>
+        <li><strong>Prepare the Data:</strong> Handle missing values, encoding, normalization/standardization, feature engineering
+          <ul class="bullets">
+            <li><strong>MinMax Scaler:</strong> Scales to [0,1] range. X_scaled = (X - X_min)/(X_max - X_min)</li>
+            <li><strong>Standard Scaler:</strong> Scales to mean=0, std=1. X_scaled = (X - μ)/σ</li>
+          </ul>
+        </li>
+        <li><strong>Select & Train Models:</strong> Try multiple models (linear, tree-based, ensemble) with cross-validation</li>
+        <li><strong>Fine-Tune Models:</strong> Grid search / random search for hyperparameters; use validation set</li>
+        <li><strong>Evaluate on Test Set:</strong> Final performance check on held-out test data</li>
+        <li><strong>Present & Deploy Solution:</strong> Document, deploy, monitor for data drift</li>
+      </ol>
+    </div>
+  </section>
+  </div>
+  </div>
+
+  <div id="page-unit2" class="page">
+  <div class="content-wrap">
+  <!-- ═══════════════ UNIT 2 ═══════════════ -->
+  <section class="unit-section" id="unit2">
+    <div class="unit-banner u2">
+      <div class="unit-num num2">UNIT II</div>
+      <div>
+        <div><h2>Supervised Learning</h2></div>
+        <p>Linear Regression · Logistic Regression · KNN · Decision Trees · SVM</p>
+      </div>
+    </div>
+
+    <!-- 2.1 Linear Regression -->
+    <div class="topic-section" id="u2-linreg">
+      <div class="topic-title">Linear Regression</div>
+      <p>Linear regression models the <strong>linear relationship</strong> between a dependent variable Y and one or more independent variables X. It is used for <strong>regression tasks</strong> (predicting continuous values).</p>
+
+      <div class="sub-title">Simple Linear Regression</div>
+      <div class="formula-label">Equation</div>
+      <div class="formula-box">Y = β₀ + β₁X + ε
+
+Where:
+  Y  = Dependent variable (target)
+  X  = Independent variable (feature)
+  β₀ = Intercept (value of Y when X=0)
+  β₁ = Slope (change in Y per unit change in X)
+  ε  = Error term (residual)</div>
+
+      <div class="sub-title">Finding β₀ and β₁ (Ordinary Least Squares)</div>
+      <div class="formula-box">β₁ = Σ(Xᵢ - X̄)(Yᵢ - Ȳ) / Σ(Xᵢ - X̄)²
+
+β₀ = Ȳ - β₁ · X̄
+
+Also: β₁ = [n·ΣXᵢYᵢ - ΣXᵢ·ΣYᵢ] / [n·ΣXᵢ² - (ΣXᵢ)²]</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Predict 7th and 9th week sales</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Given: Week (X): 1,2,3,4,5 | Sales in thousands (Y): 1,3,4,8,10</p>
+        <div class="solved-step"><strong>Step 1: Compute means</strong><br>X̄ = (1+2+3+4+5)/5 = 3, Ȳ = (1+3+4+8+10)/5 = 5.2</div>
+        <div class="solved-step"><strong>Step 2: Compute β₁</strong><br>Σ(Xᵢ-X̄)(Yᵢ-Ȳ) = (1-3)(1-5.2)+(2-3)(3-5.2)+(3-3)(4-5.2)+(4-3)(8-5.2)+(5-3)(10-5.2)<br>= (-2)(-4.2)+(-1)(-2.2)+(0)(-1.2)+(1)(2.8)+(2)(4.8) = 8.4+2.2+0+2.8+9.6 = 23<br>Σ(Xᵢ-X̄)² = 4+1+0+1+4 = 10<br>β₁ = 23/10 = 2.3</div>
+        <div class="solved-step"><strong>Step 3: Compute β₀</strong><br>β₀ = Ȳ - β₁·X̄ = 5.2 - 2.3×3 = 5.2 - 6.9 = -1.7</div>
+        <div class="solved-step"><strong>Step 4: Regression Equation</strong><br>Y = -1.7 + 2.3X</div>
+        <div class="solved-step"><strong>Prediction:</strong><br>Week 7: Y = -1.7 + 2.3(7) = -1.7 + 16.1 = <strong>14.4 thousand</strong><br>Week 9: Y = -1.7 + 2.3(9) = -1.7 + 20.7 = <strong>19 thousand</strong></div>
+      </div>
+
+      <div class="sub-title">Error Metrics</div>
+      <div class="formula-box">MSE  (Mean Squared Error)     = (1/n) Σ(Yᵢ - Ŷᵢ)²
+RMSE (Root MSE)                = √MSE
+MAE  (Mean Absolute Error)    = (1/n) Σ|Yᵢ - Ŷᵢ|
+MAPE (Mean Abs. % Error)      = (100/n) Σ|Yᵢ - Ŷᵢ|/Yᵢ</div>
+    </div>
+
+    <!-- 2.2 Multiple Linear Regression -->
+    <div class="topic-section" id="u2-multreg">
+      <div class="topic-title">Multiple Linear Regression</div>
+      <p>Extension of simple linear regression with <strong>multiple independent variables</strong>.</p>
+
+      <div class="formula-box">Y = β₀ + β₁X₁ + β₂X₂ + ... + βₖXₖ + ε
+
+Matrix Form:  β = (XᵀX)⁻¹ Xᵀy
+
+Where X is the design matrix (with column of 1s for intercept)
+      y is the target vector
+      β is the coefficient vector</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Multiple Linear Regression (Matrix Method)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Given: x1=[60,62,67,70,71,72,75,78], x2=[22,25,24,20,15,14,14,11], y=[140,155,159,179,192,200,212,215]</p>
+        <div class="solved-step"><strong>Step 1: Construct design matrix X</strong><br>Add a column of 1s for intercept: X = [1, x1, x2] (8×3 matrix)</div>
+        <div class="solved-step"><strong>Step 2: Compute XᵀX and Xᵀy</strong><br>These are matrix multiplications. X is 8×3, so XᵀX is 3×3 and Xᵀy is 3×1.</div>
+        <div class="solved-step"><strong>Step 3: Apply Normal Equation</strong><br>β = (XᵀX)⁻¹ · Xᵀy → yields β₀, β₁, β₂<br>The result gives the fitted equation: Y = β₀ + β₁·x1 + β₂·x2</div>
+        <div class="solved-step"><strong>Key Formula:</strong> β = (XᵀX)⁻¹Xᵀy — this minimizes sum of squared residuals</div>
+      </div>
+    </div>
+
+    <!-- 2.3 Logistic Regression -->
+    <div class="topic-section" id="u2-logreg">
+      <div class="topic-title">Logistic Regression</div>
+      <p>Logistic regression is used for <strong>classification</strong> (not regression despite the name!). It predicts a <strong>probability</strong> that an instance belongs to a class, then converts to binary outcome.</p>
+
+      <div class="sub-title">Sigmoid Function (Logistic Function)</div>
+      <div class="formula-box">σ(z) = 1 / (1 + e⁻ᶻ)
+
+Where z = β₀ + β₁X₁ + β₂X₂ + ...
+
+Output P(y=1|x) = σ(z) — always between 0 and 1
+
+Decision Rule:  If P ≥ 0.5 → Class 1;  If P < 0.5 → Class 0</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Student Pass/Fail Prediction</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Model: β₀ = -6, β₁ = 0.9 (study hours). Student studies 7 hours. Threshold = 0.6</p>
+        <div class="solved-step"><strong>Step 1:</strong> Compute z = β₀ + β₁·X = -6 + 0.9×7 = -6 + 6.3 = 0.3</div>
+        <div class="solved-step"><strong>Step 2:</strong> Apply sigmoid: P = 1/(1 + e⁻⁰·³) = 1/(1 + 0.7408) = 1/1.7408 ≈ <strong>0.5744 (57.44%)</strong></div>
+        <div class="solved-step"><strong>Step 3:</strong> Compare to threshold 0.6: 0.5744 < 0.6 → <strong>Predicted: FAIL</strong></div>
+      </div>
+
+      <table class="tbl">
+        <tr><th>Feature</th><th>Linear Regression</th><th>Logistic Regression</th></tr>
+        <tr><td>Problem type</td><td>Regression (continuous output)</td><td>Classification (binary/multi-class)</td></tr>
+        <tr><td>Output</td><td>Any real number</td><td>Probability [0,1]</td></tr>
+        <tr><td>Function</td><td>Linear: Y = β₀ + β₁X</td><td>Sigmoid: P = 1/(1+e⁻ᶻ)</td></tr>
+        <tr><td>Loss function</td><td>Mean Squared Error (MSE)</td><td>Log Loss (cross-entropy)</td></tr>
+        <tr><td>Real-world example</td><td>Predicting house prices</td><td>Predicting spam or not spam</td></tr>
+        <tr><td>Limitation</td><td>Assumes linear relationship</td><td>Assumes linear decision boundary</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.4 KNN -->
+    <div class="topic-section" id="u2-knn">
+      <div class="topic-title">K-Nearest Neighbors (KNN)</div>
+      <p>KNN is a <strong>lazy, instance-based</strong> classifier that classifies new data points based on the majority class among its K nearest neighbors. No training phase — just memorizes data.</p>
+
+      <div class="sub-title">Distance Metric</div>
+      <div class="formula-box">Euclidean Distance = √(Σ(Xᵢ - Yᵢ)²)
+                        = √((X₁-X₂)² + (Y₁-Y₂)²)   [2D case]
+
+Manhattan Distance = Σ|Xᵢ - Yᵢ|</div>
+
+      <div class="sub-title">KNN Algorithm Steps</div>
+      <ol class="steps">
+        <li>Assign a value to K</li>
+        <li>Calculate the Euclidean distance from the new point to all training points</li>
+        <li>Sort distances in ascending order</li>
+        <li>Pick the K nearest neighbors</li>
+        <li>For classification: assign the majority class among K neighbors<br>For regression: average the K neighbors' values</li>
+      </ol>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Diabetic Patient Prediction (K=3)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Predict Sugar for BMI=43.6, Age=40 using K=3.</p>
+        <div class="solved-step"><strong>Step 1: Compute distances from (43.6, 40) to all points:</strong><br>
+        d(33.6, 50) = √((43.6-33.6)² + (40-50)²) = √(100+100) = √200 ≈ 14.14<br>
+        d(43.1, 67) = √((43.6-43.1)² + (40-67)²) = √(0.25+729) = √729.25 ≈ 27.00<br>
+        d(35.3, 23) = √((43.6-35.3)² + (40-23)²) = √(68.89+289) = √357.89 ≈ 18.92<br>
+        d(35.9, 67) = √(59.29+729) ≈ 28.08 | d(36.7, 45) = √(47.61+25) ≈ 10.70</div>
+        <div class="solved-step"><strong>Step 2: Sort and pick K=3 nearest:</strong><br>
+        1st: (36.7, 45) → Sugar=1, dist=10.70<br>
+        2nd: (33.6, 50) → Sugar=1, dist=14.14<br>
+        3rd: (35.3, 23) → Sugar=1, dist=18.92</div>
+        <div class="solved-step"><strong>Step 3: Majority vote:</strong> All 3 neighbors have Sugar=1 → <strong>Predicted: Sugar = 1 (diabetic)</strong></div>
+      </div>
+
+      <div class="callout callout-warn">
+        <strong>Choosing K:</strong> Small K → sensitive to noise. Large K → includes points from other classes. Rule of thumb: K = √n (where n = number of training samples). Always use odd K for binary classification to avoid ties.
+      </div>
+
+      <div class="sub-title">KNN Algorithm Pseudocode</div>
+      <div class="formula-box">Algorithm KNN_Classify(X_train, y_train, x_new, K):
+  distances = []
+  FOR each (xᵢ, yᵢ) in training data:
+    d = euclidean_distance(x_new, xᵢ)
+    distances.append((d, yᵢ))
+  
+  Sort distances ascending by d
+  k_neighbors = first K elements of distances
+  
+  class_votes = count(labels in k_neighbors)
+  RETURN argmax(class_votes)</div>
+    </div>
+
+    <!-- 2.5 Decision Trees -->
+    <div class="topic-section" id="u2-dtree">
+      <div class="topic-title">Decision Trees (ID3 Algorithm)</div>
+      <p>A decision tree is a tree-like model where each internal node represents a <strong>test on a feature</strong>, each branch represents an outcome, and each leaf represents a <strong>class label</strong> (classification) or value (regression).</p>
+
+      <div class="sub-title">Entropy</div>
+      <p>Entropy measures the <strong>impurity/uncertainty</strong> in a dataset. If all examples belong to one class, entropy = 0 (pure). If classes are equally split, entropy = 1 (maximum uncertainty).</p>
+      <div class="formula-box">H(S) = -Σ pᵢ · log₂(pᵢ)
+
+For binary classification with p positive, q negative examples:
+H(S) = -p·log₂(p) - q·log₂(q)
+
+Special cases:
+  H = 0  when all examples same class (pure node)
+  H = 1  when 50% positive, 50% negative</div>
+
+      <div class="sub-title">Information Gain</div>
+      <p>Information Gain (IG) measures the <strong>reduction in entropy</strong> after splitting on an attribute. The attribute with the highest IG is chosen as the split point.</p>
+      <div class="formula-box">IG(S, A) = H(S) - Σ (|Sᵥ|/|S|) · H(Sᵥ)
+
+Where:
+  S    = current dataset
+  A    = attribute being evaluated
+  Sᵥ   = subset of S where attribute A has value v
+  H(S) = entropy of S</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — ID3 on Play Tennis Dataset (14 examples: 9+, 5-)</div>
+        <div class="solved-step"><strong>Step 1: Entropy of S</strong><br>H(S) = -9/14·log₂(9/14) - 5/14·log₂(5/14) = -(0.643)(−0.637) − (0.357)(−1.485) = 0.410 + 0.530 = <strong>0.940</strong></div>
+        <div class="solved-step"><strong>Step 2: IG for Outlook (Sunny:5, Overcast:4, Rain:5)</strong><br>
+        H(Sunny) = -2/5·log₂(2/5) - 3/5·log₂(3/5) = 0.971<br>
+        H(Overcast) = -4/4·log₂(4/4) = 0  [all positive → pure!]<br>
+        H(Rain) = -3/5·log₂(3/5) - 2/5·log₂(2/5) = 0.971<br>
+        IG(Outlook) = 0.940 - [5/14×0.971 + 4/14×0 + 5/14×0.971] = 0.940 - 0.694 = <strong>0.246</strong></div>
+        <div class="solved-step"><strong>Step 3: Compare all IG values</strong><br>
+        IG(Outlook) = 0.246 ← Highest → Root node!<br>
+        IG(Humidity) = 0.151<br>
+        IG(Wind) = 0.048<br>
+        IG(Temperature) = 0.029</div>
+        <div class="solved-step"><strong>Step 4:</strong> Select <strong>Outlook</strong> as root. Overcast branch is pure (all Yes) → leaf node. Recursively split Sunny and Rain branches.</div>
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Decision Tree for GPA/Studied → Passed (from Dec 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Dataset: GPA (L/M/H), Studied (T/F), Passed (T/F) — 6 examples</p>
+        <div class="solved-step"><strong>Distribution:</strong> 4 Pass (T), 2 Fail (F)<br>H(Passed) = -4/6·log₂(4/6) - 2/6·log₂(2/6) = -(0.667)(−0.585) − (0.333)(−1.585) = 0.390 + 0.528 = <strong>0.918</strong></div>
+        <div class="solved-step"><strong>H(Passed | GPA):</strong><br>
+        GPA=L: {F,T} → 1T, 1F → H = 1.0 (2 examples)<br>
+        GPA=M: {F,T} → 1T, 1F → H = 1.0 (2 examples)<br>
+        GPA=H: {T,T} → 2T, 0F → H = 0.0 (2 examples, pure!)<br>
+        H(Passed|GPA) = 2/6×1.0 + 2/6×1.0 + 2/6×0.0 = 0.333 + 0.333 = <strong>0.667</strong><br>
+        IG(GPA) = 0.918 - 0.667 = <strong>0.251</strong></div>
+        <div class="solved-step"><strong>H(Passed | Studied):</strong><br>
+        Studied=F: {F,F,T} → 1T, 2F → H = -1/3·log₂(1/3) - 2/3·log₂(2/3) = 0.918 (3 examples)<br>
+        Studied=T: {T,T,T} → 3T, 0F → H = 0.0 (pure!)<br>
+        H(Passed|Studied) = 3/6×0.918 + 3/6×0.0 = <strong>0.459</strong><br>
+        IG(Studied) = 0.918 - 0.459 = <strong>0.459</strong> ← Higher!<br>
+        <strong>→ Root node = Studied</strong></div>
+      </div>
+
+      <div class="sub-title">Regression Trees</div>
+      <p>When the target is continuous (not categorical), we build a <strong>Regression Tree</strong>. Instead of entropy/information gain, we use <strong>Standard Deviation Reduction (SDR)</strong>:</p>
+      <div class="formula-box">SDR(A) = SD(S) - Σ (|Sᵥ|/|S|) · SD(Sᵥ)
+
+Split criterion: choose attribute A with maximum SDR
+Leaf value: mean of target values in that leaf</div>
+    </div>
+
+    <!-- 2.6 SVM -->
+    <div class="topic-section" id="u2-svm">
+      <div class="topic-title">Support Vector Machines (SVM)</div>
+      <p>SVM is a supervised learning algorithm for classification and regression. It finds the <strong>optimal hyperplane</strong> that maximizes the margin between two classes.</p>
+
+      <div class="sub-title">Key Concepts</div>
+      <div class="grid3">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">HYPERPLANE</span></div>
+          <p>A decision boundary separating classes. In 2D it's a line, in 3D a plane, in nD a hyperplane. Equation: <strong>wᵀx + b = 0</strong></p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-purple">MARGIN</span></div>
+          <p>Distance between the hyperplane and the nearest data points from each class. SVM maximizes this margin → better generalization.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">SUPPORT VECTORS</span></div>
+          <p>The data points closest to the hyperplane. These are the critical points — removing others doesn't change the decision boundary.</p>
+        </div>
+      </div>
+
+      <div class="formula-box">SVM Decision Function: f(x) = sign(wᵀx + b)
+
+Constraints for correct classification:
+  wᵀxᵢ + b ≥ +1  for yᵢ = +1  (positive class)
+  wᵀxᵢ + b ≤ -1  for yᵢ = -1  (negative class)
+
+Or equivalently: yᵢ(wᵀxᵢ + b) ≥ 1
+
+Margin = 2/||w||
+
+Optimization: Maximize margin = Minimize (1/2)||w||²</div>
+
+      <div class="sub-title">Linear SVM vs Non-Linear SVM</div>
+      <table class="tbl">
+        <tr><th>Feature</th><th>Linear SVM</th><th>Non-Linear SVM</th></tr>
+        <tr><td>Data</td><td>Linearly separable</td><td>Not linearly separable</td></tr>
+        <tr><td>Boundary</td><td>Straight hyperplane</td><td>Complex boundary via kernel trick</td></tr>
+        <tr><td>Kernel</td><td>Linear (no transformation)</td><td>RBF, Polynomial, Sigmoid</td></tr>
+      </table>
+
+      <div class="sub-title">Kernel Functions</div>
+      <div class="formula-box">Linear Kernel:      K(x,y) = xᵀy
+Polynomial Kernel: K(x,y) = (xᵀy + c)ᵈ
+RBF (Gaussian):    K(x,y) = exp(-γ||x-y||²)
+Sigmoid Kernel:    K(x,y) = tanh(αxᵀy + c)
+
+The "Kernel Trick": Maps data into higher-dimensional space
+without explicitly computing the transformation. Makes
+non-linearly separable data linearly separable in higher dimensions.</div>
+
+      <div class="sub-title">Hard Margin vs. Soft Margin SVM</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">HARD MARGIN</span></div>
+          <p>No misclassification allowed. Requires data to be perfectly linearly separable. Very strict — fails when data has noise or overlap.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">SOFT MARGIN</span></div>
+          <p>Allows some misclassification. Uses slack variables (ξᵢ) to permit points inside or on the wrong side of the margin. Controlled by hyperparameter C — high C → less tolerance for errors.</p>
+        </div>
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — SVM Weight Vector and Hyperplane (from Aug 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Positive SVs: {(3,1),(3,-1),(6,1),(6,-1)} | Negative SVs: {(1,0),(0,1),(0,-1),(-1,0)}</p>
+        <div class="solved-step"><strong>Support vectors identified:</strong> S₁=(1,0), S₂=(3,1), S₃=(3,-1)</div>
+        <div class="solved-step"><strong>Augmented with bias:</strong> S̃₁=(1,0,1), S̃₂=(3,1,1), S̃₃=(3,-1,1)</div>
+        <div class="solved-step"><strong>Set up system of equations (KKT conditions):</strong><br>
+        α₁(S̃₁·S̃₁) + α₂(S̃₂·S̃₁) + α₃(S̃₃·S̃₁) = -1 → 2α₁ + 4α₂ + 4α₃ = -1<br>
+        α₁(S̃₁·S̃₂) + α₂(S̃₂·S̃₂) + α₃(S̃₃·S̃₂) = +1 → 4α₁ + 11α₂ + 9α₃ = 1<br>
+        α₁(S̃₁·S̃₃) + α₂(S̃₂·S̃₃) + α₃(S̃₃·S̃₃) = +1 → 4α₁ + 9α₂ + 11α₃ = 1</div>
+        <div class="solved-step"><strong>Solving gives:</strong> α₁ = -3.5, α₂ = 0.75, α₃ = 0.75</div>
+        <div class="solved-step"><strong>Weight vector:</strong> w̃ = Σαᵢ·S̃ᵢ = -3.5(1,0,1) + 0.75(3,1,1) + 0.75(3,-1,1) = (1,0,-2)<br>
+        So w = (1,0) and b = -2 → <strong>Hyperplane: x₁ - 2 = 0 → x₁ = 2</strong> (vertical line at x=2)</div>
+      </div>
+    </div>
+  </section>
+  </div>
+  </div>
+
+  <div id="page-unit3" class="page">
+  <div class="content-wrap">
+  <!-- ═══════════════ UNIT 3 ═══════════════ -->
+  <section class="unit-section" id="unit3">
+    <div class="unit-banner u3">
+      <div class="unit-num num3">UNIT III</div>
+      <div>
+        <div><h2>Design & Analysis of ML Experiments</h2></div>
+        <p>Guidelines · Cross Validation · Performance Metrics · Statistical Tests</p>
+      </div>
+    </div>
+
+    <!-- 3.1 Guidelines -->
+    <div class="topic-section" id="u3-guidelines">
+      <div class="topic-title">Guidelines for Machine Learning Experiments</div>
+      <p>A systematic approach ensures reliable and reproducible results when assessing or comparing ML algorithms.</p>
+
+      <ol class="steps">
+        <li><strong>Aim of the Study:</strong> Clearly define the problem. Goals: estimate error, compare two algorithms, rank multiple algorithms. Define success criteria upfront.</li>
+        <li><strong>Selection of Response Variable:</strong> For classification → misclassification error (0/1 loss); For regression → MSE; Also consider Precision, Recall, F1 for information retrieval tasks.</li>
+        <li><strong>Choice of Factors and Levels:</strong> Hyperparameter tuning → parameters are factors; Algorithm comparison → the algorithm itself is a factor. Carefully select levels to avoid missing optimal configurations.</li>
+        <li><strong>Choice of Experimental Design:</strong> Use factorial design to capture interactions between factors. Consider data size, train-test splits, and resampling strategies.</li>
+        <li><strong>Performing the Experiment:</strong> Conduct trial runs first. Save random seeds for reproducibility. Use well-tested libraries.</li>
+        <li><strong>Statistical Analysis of Data:</strong> Use hypothesis testing to validate claims. Visualize error distributions. Never make subjective interpretations without statistical backing.</li>
+      </ol>
+    </div>
+
+    <!-- 3.2 Cross Validation -->
+    <div class="topic-section" id="u3-cv">
+      <div class="topic-title">Cross Validation (CV) and Resampling</div>
+
+      <div class="sub-title">Holdout Validation</div>
+      <p>Split data into training set (e.g., 80%) and test set (20%). Simple but high variance — performance depends heavily on the split.</p>
+
+      <div class="sub-title">K-Fold Cross Validation</div>
+      <p>Divide dataset into K equal folds. Train K times, each time using (K-1) folds for training and 1 fold for testing. Average the K results.</p>
+      <ol class="steps">
+        <li>Shuffle dataset</li>
+        <li>Split into K equal folds</li>
+        <li>For each fold i: train on all folds except i, test on fold i</li>
+        <li>Average the evaluation metrics across all K folds</li>
+      </ol>
+      <div class="callout callout-info">
+        <strong>Example (K=5):</strong> 10 samples split into 5 folds of 2 each. Fold 1 used for test, Folds 2-5 for train. Then Fold 2 for test, etc. Final accuracy = average of 5 fold accuracies.
+      </div>
+
+      <div class="sub-title">Stratified K-Fold Cross Validation</div>
+      <p>Like K-Fold but ensures each fold has the <strong>same class distribution</strong> as the full dataset. Crucial for imbalanced datasets.</p>
+      <div class="callout callout-warn">
+        <strong>When to use Stratified K-Fold:</strong> When class distribution is imbalanced (e.g., 90% class A, 10% class B). Without stratification, some folds might have no minority class examples.
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Stratified K-Fold Example</div>
+        <div class="solved-step">800 samples: 720 Class 0, 80 Class 1. Use 4-fold stratified CV.<br>
+        Ratio Class 1: 80/800 = 10%<br>
+        Each fold = 800/4 = 200 samples<br>
+        Class 1 per fold = 10% × 200 = <strong>20 Class 1 samples per fold</strong></div>
+      </div>
+
+      <div class="sub-title">Bootstrapping</div>
+      <p>Create new datasets by <strong>sampling with replacement</strong> from the original dataset. Each bootstrap sample is likely to have some repeated and some missing records. Used in ensemble methods like Random Forest.</p>
+    </div>
+
+    <!-- 3.3 Performance Metrics -->
+    <div class="topic-section" id="u3-metrics">
+      <div class="topic-title">Measuring Classifier Performance</div>
+
+      <div class="sub-title">Confusion Matrix Components</div>
+      <div class="formula-box">                Predicted +    Predicted -
+Actual +    TP (True Pos)  FN (False Neg)
+Actual -    FP (False Pos) TN (True Neg)</div>
+
+      <div class="sub-title">Performance Metrics Formulas</div>
+      <div class="formula-box">Accuracy  = (TP + TN) / (TP + TN + FP + FN)
+
+Precision = TP / (TP + FP)        ← "Of predicted positives, how many correct?"
+
+Recall    = TP / (TP + FN)        ← "Of actual positives, how many found?"
+(Sensitivity, True Positive Rate)
+
+F1-Score  = 2 × (Precision × Recall) / (Precision + Recall)
+(Harmonic mean — balances precision and recall)
+
+Specificity (TNR) = TN / (TN + FP)
+
+FPR (False Positive Rate) = FP / (FP + TN)</div>
+
+      <div class="grid3">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">PRECISION</span></div>
+          <p>Use when <strong>false positives are costly</strong>. Example: spam filter — marking a legitimate email as spam (FP) is bad.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-red">RECALL</span></div>
+          <p>Use when <strong>false negatives are costly</strong>. Example: cancer detection — missing a cancer case (FN) is dangerous.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">F1-SCORE</span></div>
+          <p>Use when you need to <strong>balance precision and recall</strong>, especially with imbalanced datasets. Fraud detection.</p>
+        </div>
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Multiclass Confusion Matrix (from June 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Confusion matrix for 3 classes:</p>
+        <table class="tbl">
+          <tr><th>True\Pred</th><th>Class 1</th><th>Class 2</th><th>Class 3</th></tr>
+          <tr><td>Class 1</td><td>8</td><td>2</td><td>0</td></tr>
+          <tr><td>Class 2</td><td>1</td><td>9</td><td>0</td></tr>
+          <tr><td>Class 3</td><td>1</td><td>2</td><td>7</td></tr>
+        </table>
+        <div class="solved-step"><strong>Class 1:</strong> TP=8, FP=1+1=2, FN=2+0=2, TN=9+0+2+7=18<br>
+        Precision = 8/(8+2) = 0.80 | Recall = 8/(8+2) = 0.80 | F1 = 2(0.8×0.8)/(0.8+0.8) = 0.80</div>
+        <div class="solved-step"><strong>Class 2:</strong> TP=9, FP=2+2=4, FN=1+0=1, TN=8+0+1+7=16<br>
+        Precision = 9/(9+4) = 0.692 | Recall = 9/(9+1) = 0.90 | F1 = 2(0.692×0.90)/(0.692+0.90) = 0.783</div>
+        <div class="solved-step"><strong>Class 3:</strong> TP=7, FP=0+0=0, FN=2+0=2<br>
+        Precision = 7/7 = 1.00 | Recall = 7/(7+2) = 0.778 | F1 = 2(1.0×0.778)/(1.0+0.778) = 0.875</div>
+        <div class="solved-step"><strong>Overall Accuracy</strong> = (8+9+7)/30 = 24/30 = <strong>0.80 (80%)</strong></div>
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Flu Test Confusion Matrix (from June 2025 paper)</div>
+        <div class="solved-step">10,000 patients: 1,000 sick, 9,000 healthy<br>
+        Sick→Positive (TP)=620, Sick→Negative (FN)=380<br>
+        Healthy→Positive (FP)=180, Healthy→Negative (TN)=8820</div>
+        <div class="solved-step"><strong>Precision</strong> = TP/(TP+FP) = 620/(620+180) = 620/800 = <strong>0.775</strong></div>
+        <div class="solved-step"><strong>Recall</strong> = TP/(TP+FN) = 620/(620+380) = 620/1000 = <strong>0.620</strong></div>
+      </div>
+    </div>
+
+    <!-- 3.4 Confusion Matrix & ROC -->
+    <div class="topic-section" id="u3-confusion">
+      <div class="topic-title">ROC Curve and AUC</div>
+      <p>The <strong>Receiver Operating Characteristic (ROC)</strong> curve plots TPR (True Positive Rate / Recall) on the Y-axis against FPR (False Positive Rate) on the X-axis as the classification threshold varies from 0 to 1.</p>
+
+      <div class="formula-box">TPR = TP / (TP + FN)  ← Y-axis of ROC
+FPR = FP / (FP + TN)  ← X-axis of ROC
+
+AUC (Area Under Curve):
+  AUC = 1.0  → Perfect classifier
+  AUC = 0.5  → Random guessing (diagonal line)
+  AUC < 0.5  → Worse than random (inverted labels)</div>
+
+      <div class="callout callout-success">
+        <strong>ROC vs Accuracy:</strong> Accuracy is misleading on imbalanced datasets (a model predicting all "healthy" gets 90% accuracy). ROC/AUC evaluates the model's ability to discriminate between classes at ALL thresholds.
+      </div>
+    </div>
+
+    <!-- 3.5 Statistical Tests -->
+    <div class="topic-section" id="u3-ttest">
+      <div class="topic-title">Statistical Tests for Model Comparison</div>
+
+      <div class="sub-title">Paired t-Test</div>
+      <p>Used to determine if the performance difference between two classifiers on the <strong>same dataset</strong> is statistically significant.</p>
+      <div class="formula-box">Steps:
+1. Compute differences dᵢ = accuracy_A(i) - accuracy_B(i) for each fold
+2. Compute mean: d̄ = (1/n) Σdᵢ
+3. Compute std dev: s = √[Σ(dᵢ - d̄)² / (n-1)]
+4. Compute t-statistic: t = d̄ / (s / √n)
+5. Compare |t| to critical t-value at (n-1) degrees of freedom
+
+Decision:
+  |t| ≥ t_critical → Reject H₀ (significant difference exists)
+  |t| < t_critical → Fail to reject H₀ (no significant difference)</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Paired t-Test (from Dec 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Model A: [90,85,88,92,87] | Model B: [88,83,87,91,85] | α=0.05, t_critical(4df)=2.776</p>
+        <div class="solved-step"><strong>Step 1: Differences dᵢ = A - B:</strong> 2, 2, 1, 1, 2</div>
+        <div class="solved-step"><strong>Step 2: Mean d̄</strong> = (2+2+1+1+2)/5 = 8/5 = <strong>1.6</strong></div>
+        <div class="solved-step"><strong>Step 3: Standard deviation s</strong><br>Σ(dᵢ-d̄)² = (2-1.6)²+(2-1.6)²+(1-1.6)²+(1-1.6)²+(2-1.6)² = 0.16+0.16+0.36+0.36+0.16 = 1.2<br>s = √(1.2/4) = √0.3 = <strong>0.5477</strong></div>
+        <div class="solved-step"><strong>Step 4: t-statistic</strong> = 1.6 / (0.5477/√5) = 1.6 / 0.2449 = <strong>6.53</strong></div>
+        <div class="solved-step"><strong>Step 5: Decision</strong> — |t|=6.53 > t_critical=2.776 → <strong>Reject H₀ → Model A significantly outperforms Model B!</strong></div>
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Paired t-Test (from Aug 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Model A: [85,87,90,86,88] | Model B: [83,85,88,87,86] | α=0.05, t_critical(4df)=2.776</p>
+        <div class="solved-step"><strong>Differences dᵢ:</strong> 2, 2, 2, -1, 2. d̄ = 7/5 = 1.4</div>
+        <div class="solved-step"><strong>s:</strong> Σ(dᵢ-d̄)² = 0.36+0.36+0.36+5.76+0.36 = 7.2; s = √(7.2/4) = √1.8 = 1.342</div>
+        <div class="solved-step"><strong>t = 1.4 / (1.342/√5) = 1.4 / 0.600 = 2.33</strong></div>
+        <div class="solved-step"><strong>Decision:</strong> 2.33 < 2.776 → <strong>Fail to reject H₀ → No significant difference</strong> at 95% confidence.</div>
+      </div>
+
+      <div class="sub-title">McNemar's Test</div>
+      <p>Used to compare two classifiers based on their <strong>disagreements</strong> on paired data. Best for binary classification with small samples.</p>
+      <div class="formula-box">Contingency Table:
+              Classifier B Correct  Classifier B Wrong
+Classifier A Correct:     n₀₀              n₀₁
+Classifier A Wrong:       n₁₀              n₁₁
+
+McNemar Statistic: χ² = (n₀₁ - n₁₀)² / (n₀₁ + n₁₀)
+
+p-value from chi-squared distribution with 1 degree of freedom
+H₀: Both classifiers have same error rate
+Reject H₀ if χ² > 3.841 (at α=0.05)</div>
+    </div>
+  </section>
+  </div>
+  </div>
+
+  <div id="page-unit4" class="page">
+  <div class="content-wrap">
+  <!-- ═══════════════ UNIT 4 ═══════════════ -->
+  <section class="unit-section" id="unit4">
+    <div class="unit-banner u4">
+      <div class="unit-num num4">UNIT IV</div>
+      <div>
+        <div><h2>Ensemble Techniques & Unsupervised Learning</h2></div>
+        <p>Bagging · Boosting · Stacking · Voting · K-Means · PCA</p>
+      </div>
+    </div>
+
+    <!-- 4.1 Ensemble -->
+    <div class="topic-section" id="u4-ensemble">
+      <div class="topic-title">Ensemble Learning — Introduction</div>
+      <p>Ensemble learning combines multiple models (<strong>weak learners</strong>) to produce a stronger, more accurate and robust model. The core idea: <em>"the wisdom of the crowd is greater than any individual expert."</em></p>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">BIAS</span></div>
+          <p>Error from overly simplistic assumptions. High bias → underfitting. Model is too simple to capture the true pattern.</p>
+          <p><em>Example: True: y=x², Model: y=ax+b → consistent underprediction</em></p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-purple">VARIANCE</span></div>
+          <p>Error from sensitivity to fluctuations in training data. High variance → overfitting. Model learns noise.</p>
+          <p><em>Example: Complex decision tree perfectly fits training data but fails on test data</em></p>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>Ensemble Methods:</strong> Bagging → reduces variance | Boosting → reduces bias | Stacking → improves predictions by combining diverse models
+      </div>
+    </div>
+
+    <!-- 4.2 Bagging & Random Forest -->
+    <div class="topic-section" id="u4-bagging">
+      <div class="topic-title">Bagging (Bootstrap Aggregating) & Random Forest</div>
+
+      <div class="sub-title">Bootstrapping</div>
+      <p>Create multiple datasets by <strong>sampling with replacement</strong> from the original dataset. Each bootstrap sample is approximately the same size as the original but with repeated and missing instances.</p>
+
+      <div class="formula-box">Original: [1,2,3,4,5]
+Bootstrap Sample 1: [1,3,4,4,5]  ← 4 appears twice, 2 missing
+Bootstrap Sample 2: [2,2,3,5,1]  ← 2 appears twice, 4 missing
+Bootstrap Sample 3: [5,3,1,3,4]  ← 3 appears twice, 2 missing</div>
+
+      <div class="sub-title">Bagging Algorithm</div>
+      <ol class="steps">
+        <li>Create B bootstrap samples from training data</li>
+        <li>Train a separate model (usually decision tree) on each bootstrap sample in parallel</li>
+        <li>For classification: take majority vote across all B models</li>
+        <li>For regression: take average of all B model predictions</li>
+      </ol>
+      <p><strong>Goal:</strong> Reduce variance. Particularly effective for high-variance models (decision trees).</p>
+      <p><strong>Bagging vs Pasting:</strong> Bagging samples with replacement; Pasting samples without replacement.</p>
+
+      <div class="sub-title">Random Forest</div>
+      <p>Random Forest extends bagging with an additional <strong>feature randomness</strong> step: at each split, only a random subset of features is considered (not all features). This further decorrelates the trees and reduces overfitting.</p>
+      <ul class="bullets">
+        <li><strong>Bootstrapping:</strong> Each tree trained on a different random sample</li>
+        <li><strong>Feature Randomness:</strong> Random subset of features at each split (usually √n features for classification)</li>
+        <li><strong>Ensemble:</strong> Final prediction by majority vote (classification) or average (regression)</li>
+      </ul>
+    </div>
+
+    <!-- 4.3 Boosting -->
+    <div class="topic-section" id="u4-boosting">
+      <div class="topic-title">Boosting & AdaBoost</div>
+      <p>Boosting trains models <strong>sequentially</strong>. Each new model focuses more on the mistakes of the previous one. Combines into a weighted ensemble.</p>
+
+      <div class="sub-title">AdaBoost (Adaptive Boosting)</div>
+      <ol class="steps">
+        <li>Initialize equal weights for all training samples: wᵢ = 1/N</li>
+        <li>Train a weak learner (decision stump) on weighted data</li>
+        <li>Compute error rate: ε = Σwᵢ · 𝕀[yᵢ ≠ ŷᵢ]</li>
+        <li>Compute model weight: α = 0.5 · ln((1-ε)/ε)</li>
+        <li>Update sample weights: wᵢ ← wᵢ · exp(-αyᵢĥ(xᵢ)); then normalize</li>
+        <li>Misclassified samples get higher weight; correctly classified get lower weight</li>
+        <li>Repeat until convergence or max iterations</li>
+        <li>Final prediction: H(x) = sign(Σ αₜ·hₜ(x))</li>
+      </ol>
+
+      <table class="tbl">
+        <tr><th>Feature</th><th>Bagging</th><th>Boosting</th></tr>
+        <tr><td>Training</td><td>Parallel (independent)</td><td>Sequential (dependent)</td></tr>
+        <tr><td>Focus</td><td>Reduces variance</td><td>Reduces bias</td></tr>
+        <tr><td>Data sampling</td><td>Random bootstrap samples</td><td>Weighted samples</td></tr>
+        <tr><td>Error correction</td><td>No (independent trees)</td><td>Yes (each tree corrects previous)</td></tr>
+        <tr><td>Examples</td><td>Random Forest</td><td>AdaBoost, XGBoost, Gradient Boosting</td></tr>
+        <tr><td>Overfitting risk</td><td>Low</td><td>Moderate (can overfit noisy data)</td></tr>
+      </table>
+    </div>
+
+    <!-- 4.4 Stacking & Voting -->
+    <div class="topic-section" id="u4-stacking">
+      <div class="topic-title">Stacking & Voting</div>
+
+      <div class="sub-title">Stacking</div>
+      <p>Train multiple <strong>diverse base models</strong>, then use their predictions as inputs to a <strong>meta-model</strong> (also called blender) that learns how to best combine them.</p>
+      <ol class="steps">
+        <li>Train base models (e.g., Decision Tree, SVM, Logistic Regression) on training data</li>
+        <li>Generate out-of-fold predictions from each base model</li>
+        <li>Create a new "meta-dataset" with these predictions as features</li>
+        <li>Train the meta-model on this new dataset</li>
+        <li>For new data: pass through base models, then through meta-model for final prediction</li>
+      </ol>
+
+      <div class="sub-title">Voting</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">HARD VOTING</span></div>
+          <p>Each classifier votes for a class label. The class with the <strong>most votes</strong> wins. Example: 3 classifiers predict [Cat, Dog, Cat] → Cat wins (2 vs 1).</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">SOFT VOTING</span></div>
+          <p>Average the <strong>predicted probabilities</strong> across classifiers. More informative — uses confidence of each classifier. Example: Avg Prob(Yes)=0.67 > Avg Prob(No)=0.33 → predict Yes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.5 Clustering -->
+    <div class="topic-section" id="u4-clustering">
+      <div class="topic-title">Unsupervised Learning & K-Means Clustering</div>
+
+      <p>Clustering groups similar data points together <strong>without predefined labels</strong>. K-Means is the most popular clustering algorithm.</p>
+
+      <div class="sub-title">K-Means Algorithm</div>
+      <ol class="steps">
+        <li><strong>Initialization:</strong> Choose K data points as initial centroids (randomly or K-Means++)</li>
+        <li><strong>Assignment:</strong> Assign each point to the nearest centroid using Euclidean distance</li>
+        <li><strong>Update:</strong> Recalculate each centroid as the mean of all points assigned to it</li>
+        <li><strong>Repeat</strong> steps 2-3 until centroids don't change (convergence)</li>
+      </ol>
+
+      <div class="formula-box">Euclidean Distance: d(A,B) = √((x₂-x₁)² + (y₂-y₁)²)
+Manhattan Distance: d(A,B) = |x₂-x₁| + |y₂-y₁|
+
+New Centroid: μₖ = (1/|Cₖ|) Σ xᵢ  (mean of all points in cluster k)
+
+Objective: Minimize WCSS = Σₖ Σᵢ∈Cₖ ||xᵢ - μₖ||²</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — K-Means (K=2, 2 Iterations)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Points: (185,72),(170,56),(168,60),(179,68),(182,72),(188,77). Initial centroids: C1=(185,72), C2=(170,56)</p>
+        
+        <div class="solved-step"><strong>ITERATION 1 — Assignment:</strong><br>
+        d(185,72) to C1=(185,72): √(0+0) = 0 → C1<br>
+        d(170,56) to C1: √(225+256)=√481=21.9; to C2=(170,56): 0 → C2<br>
+        d(168,60) to C1: √(289+144)=√433=20.8; to C2: √(4+16)=√20=4.47 → C2<br>
+        d(179,68) to C1: √(36+16)=√52=7.21; to C2: √(81+144)=√225=15 → C1<br>
+        d(182,72) to C1: √(9+0)=3; to C2: √(144+256)=√400=20 → C1<br>
+        d(188,77) to C1: √(9+25)=√34=5.83; to C2: √(324+441)=√765=27.7 → C1</div>
+        
+        <div class="solved-step"><strong>Cluster 1:</strong> (185,72),(179,68),(182,72),(188,77)<br>
+        <strong>Cluster 2:</strong> (170,56),(168,60)<br>
+        New C1 = ((185+179+182+188)/4, (72+68+72+77)/4) = (183.5, 72.25)<br>
+        New C2 = ((170+168)/2, (56+60)/2) = (169, 58)</div>
+        
+        <div class="solved-step"><strong>ITERATION 2 — Assignment with new centroids C1=(183.5,72.25), C2=(169,58):</strong><br>
+        Re-assign all points; clusters stabilize. Typically same as Iteration 1 result since points are well-separated.</div>
+      </div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — K-Means with Manhattan Distance (from Aug 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Points: A1(2,10),A2(2,5),A3(8,4),A4(5,8),A5(7,5),A6(6,4),A7(1,2),A8(4,9). K=3, initial centroids: A1(2,10), A4(5,8), A7(1,2). Distance: ρ(a,b)=|x₂-x₁|+|y₂-y₁|</p>
+        
+        <div class="solved-step"><strong>Iteration 1 — Distance from each point to C1(2,10), C2(5,8), C3(1,2):</strong><br>
+        A1(2,10): |2-2|+|10-10|=0 to C1, |2-5|+|10-8|=5 to C2, |2-1|+|10-2|=9 to C3 → C1<br>
+        A2(2,5): |0|+|5|=5 to C1, |3|+|3|=6 to C2, |1|+|3|=4 to C3 → C3<br>
+        A3(8,4): 10 to C1, 7 to C2, 9 to C3 → C2<br>
+        A4(5,8): 6 to C1, 0 to C2, 10 to C3 → C2<br>
+        A5(7,5): 10 to C1, 5 to C2, 9 to C3 → C2<br>
+        A6(6,4): 10 to C1, 5 to C2, 7 to C3 → C2<br>
+        A7(1,2): 9 to C1, 10 to C2, 0 to C3 → C3<br>
+        A8(4,9): 3 to C1, 2 to C2, 10 to C3 → C2</div>
+        
+        <div class="solved-step"><strong>Clusters after Iter 1:</strong> C1={A1}, C2={A3,A4,A5,A6,A8}, C3={A2,A7}<br>
+        New C1=(2,10) | New C2=((8+5+7+6+4)/5, (4+8+5+4+9)/5)=(6,6) | New C3=((2+1)/2,(5+2)/2)=(1.5,3.5)</div>
+        
+        <div class="solved-step"><strong>Iteration 2 — Repeat with C1=(2,10), C2=(6,6), C3=(1.5,3.5):</strong><br>Continue until cluster assignments stabilize.</div>
+      </div>
+    </div>
+
+    <!-- 4.6 PCA -->
+    <div class="topic-section" id="u4-pca">
+      <div class="topic-title">Dimensionality Reduction — PCA</div>
+      <p>Principal Component Analysis (PCA) is a linear technique that reduces dimensionality by finding new axes (<strong>principal components</strong>) that capture the maximum variance in the data. PCs are orthogonal (uncorrelated).</p>
+
+      <div class="sub-title">Curse of Dimensionality</div>
+      <p>More features ≠ always better. Too many features cause: overfitting, increased computation, sparse data. PCA addresses this.</p>
+
+      <div class="sub-title">Steps for PCA</div>
+      <ol class="steps">
+        <li><strong>Standardize the data</strong> (subtract mean, divide by std dev)</li>
+        <li><strong>Compute the Covariance Matrix:</strong> C = (1/(n-1)) XᵀX (on centered data)</li>
+        <li><strong>Compute Eigenvalues and Eigenvectors</strong> of the covariance matrix</li>
+        <li><strong>Sort eigenvalues</strong> in descending order — larger eigenvalue = more variance captured</li>
+        <li><strong>Select top k eigenvectors</strong> (principal components) based on desired explained variance (e.g., 95%)</li>
+        <li><strong>Project data</strong> onto the new k-dimensional subspace</li>
+      </ol>
+
+      <div class="formula-box">Covariance Formula:
+Cov(X,Y) = Σ(xᵢ - x̄)(yᵢ - ȳ) / (n-1)
+
+Covariance Matrix for 2 features X₁, X₂:
+C = [[Var(X₁),  Cov(X₁,X₂)],
+     [Cov(X₂,X₁), Var(X₂)]]
+
+Eigenvalue equation: C·v = λ·v
+det(C - λI) = 0  ← Characteristic equation
+
+Projection: Z = X · V_k  (X = centered data, V_k = top k eigenvectors)</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — PCA: 2D to 1D</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Data: X1=[2,3,4,5], X2=[4,6,8,10] (Note: X2 = 2·X1 — perfectly correlated)</p>
+        
+        <div class="solved-step"><strong>Step 1: Compute means</strong><br>
+        x̄₁ = (2+3+4+5)/4 = 3.5 | x̄₂ = (4+6+8+10)/4 = 7.0</div>
+        
+        <div class="solved-step"><strong>Step 2: Center the data (subtract mean)</strong><br>
+        Centered X1: [-1.5, -0.5, 0.5, 1.5]<br>
+        Centered X2: [-3, -1, 1, 3]</div>
+        
+        <div class="solved-step"><strong>Step 3: Covariance Matrix</strong><br>
+        Var(X1) = (2.25+0.25+0.25+2.25)/3 = 5/3 ≈ 1.667<br>
+        Var(X2) = (9+1+1+9)/3 = 20/3 ≈ 6.667<br>
+        Cov(X1,X2) = (4.5+0.5+0.5+4.5)/3 = 10/3 ≈ 3.333<br>
+        C = [[1.667, 3.333], [3.333, 6.667]]</div>
+        
+        <div class="solved-step"><strong>Step 4: Find Eigenvalues</strong><br>
+        det(C - λI) = (1.667-λ)(6.667-λ) - (3.333)² = 0<br>
+        λ² - 8.334λ + 11.11 - 11.11 = 0<br>
+        λ(λ - 8.334) = 0 → λ₁ = 8.334, λ₂ = 0</div>
+        
+        <div class="solved-step"><strong>Step 5: PC1 captures 100% of variance!</strong><br>
+        For λ₁=8.334: (C-λI)v=0 → -6.667x+3.333y=0 → y=2x → v₁=(1,2)/||...|| = (0.447, 0.894)<br>
+        For λ₂=0: v₂=(-0.894, 0.447)</div>
+        
+        <div class="solved-step"><strong>Step 6: Project onto PC1</strong><br>
+        New 1D values = Xcentered · v₁<br>
+        Point 1: (-1.5)(0.447)+(-3)(0.894) = -0.671-2.683 = -3.354<br>
+        Point 2: (-0.5)(0.447)+(-1)(0.894) = -0.224-0.894 = -1.118<br>
+        Point 3: (0.5)(0.447)+(1)(0.894) = 1.118<br>
+        Point 4: (1.5)(0.447)+(3)(0.894) = 3.354</div>
+
+        <div class="solved-step"><strong>Deciding number of components:</strong> Plot "scree plot" of explained variance. Keep components until cumulative explained variance ≥ 95%. If λ₁/(λ₁+λ₂) = 8.334/8.334 = 100%, keep just 1 PC.</div>
+      </div>
+    </div>
+  </section>
+  </div>
+  </div>
+
+  <div id="page-unit5" class="page">
+  <div class="content-wrap">
+  <!-- ═══════════════ UNIT 5 ═══════════════ -->
+  <section class="unit-section" id="unit5">
+    <div class="unit-banner u5">
+      <div class="unit-num num5">UNIT V</div>
+      <div>
+        <div><h2>Reinforcement Learning</h2></div>
+        <p>Learning Task · Q-Learning · MDP · Temporal Difference · Active RL · Generalization</p>
+      </div>
+    </div>
+
+    <!-- 5.1 Intro to RL -->
+    <div class="topic-section" id="u5-intro">
+      <div class="topic-title">Introduction to Reinforcement Learning</div>
+      <p>RL is a type of ML where an <strong>agent</strong> learns to make decisions by interacting with an <strong>environment</strong> through trial and error. Unlike supervised learning, there's no labeled training data — the agent receives <strong>reward signals</strong> to guide learning.</p>
+
+      <div class="sub-title">Key Components</div>
+      <table class="tbl">
+        <tr><th>Component</th><th>Definition</th><th>Example (Dog Training)</th></tr>
+        <tr><td>Agent</td><td>The learner/decision-maker</td><td>The dog</td></tr>
+        <tr><td>Environment</td><td>The external system</td><td>The training room</td></tr>
+        <tr><td>State (S)</td><td>Current situation representation</td><td>"Dog is sitting"</td></tr>
+        <tr><td>Action (A)</td><td>Possible moves the agent can make</td><td>Sit, Jump, Run, Stay</td></tr>
+        <tr><td>Reward (R)</td><td>Feedback signal (+ or -)</td><td>+10 for sitting, -5 for jumping</td></tr>
+        <tr><td>Policy (π)</td><td>Strategy mapping states to actions</td><td>If commanded → sit</td></tr>
+        <tr><td>Value Function V(s)</td><td>Expected cumulative reward from state s</td><td>How good is "sitting near trainer"?</td></tr>
+        <tr><td>Q-Value Q(s,a)</td><td>Expected reward of action a in state s</td><td>Value of sitting when asked to sit</td></tr>
+      </table>
+
+      <div class="sub-title">Learning Cycle</div>
+      <ol class="steps">
+        <li>Agent observes current state of environment</li>
+        <li>Agent selects an action based on its current policy</li>
+        <li>Action is applied to the environment</li>
+        <li>Environment responds with a new state and a reward</li>
+        <li>Agent updates its policy based on this experience</li>
+        <li>Goal: Learn optimal policy π* that maximizes expected cumulative reward</li>
+      </ol>
+
+      <div class="sub-title">Model-Based vs. Model-Free RL</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="tag tag-blue">MODEL-BASED RL</span></div>
+          <p>Agent knows or learns the environment's transition model P(s'|s,a) and reward function R(s,a). Uses this model to plan ahead.</p>
+          <p><strong>When to use:</strong> Static/fixed environments with known physics (chess, simulators)</p>
+          <p><strong>Examples:</strong> Dynamic Programming, Value Iteration, Policy Iteration</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="tag tag-green">MODEL-FREE RL</span></div>
+          <p>Agent does NOT know the environment model. Learns directly from experience by interacting with the environment.</p>
+          <p><strong>When to use:</strong> Dynamic, unknown environments (autonomous driving, real robots)</p>
+          <p><strong>Examples:</strong> Q-Learning, SARSA, Actor-Critic</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5.2 MDP -->
+    <div class="topic-section" id="u5-mdp">
+      <div class="topic-title">Markov Decision Process (MDP)</div>
+      <p>MDP is the mathematical framework for RL problems. It formalizes the environment as a tuple (S, A, P, R, γ).</p>
+
+      <div class="formula-box">MDP Tuple: (S, A, P, R, γ)
+
+S = State space (set of all possible states)
+A = Action space (set of all possible actions)
+P = Transition probability: P(s'|s,a) = P(next state = s' | state=s, action=a)
+R = Reward function: R(s,a,s')
+γ = Discount factor (0 ≤ γ ≤ 1) — how much future rewards matter
+
+Markov Property: P(s'|s,a,history) = P(s'|s,a)
+(The future depends only on the current state, not the past)</div>
+
+      <div class="sub-title">Bellman Equations</div>
+      <div class="formula-box">State Value Function V(s):
+V^π(s) = Σₐ π(a|s) Σₛ' P(s'|s,a)[R(s,a,s') + γV^π(s')]
+
+Optimal State Value:
+V*(s) = max_a Σₛ' P(s'|s,a)[R(s,a,s') + γV*(s')]
+
+Q-Value Function:
+Q^π(s,a) = Σₛ' P(s'|s,a)[R(s,a,s') + γ Σₐ' π(a'|s')Q^π(s',a')]</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — MDP Design for Vending Machine (from Dec 2025 paper)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">Machine gives Snack or Drink. 80% correct if user selects Snack, 90% correct if user selects Drink. Reward: +10 correct, -5 wrong.</p>
+        <div class="solved-step"><strong>States S:</strong> {Select_Snack, Select_Drink}</div>
+        <div class="solved-step"><strong>Actions A:</strong> {Dispense_Snack, Dispense_Drink}</div>
+        <div class="solved-step"><strong>Transition Probabilities P:</strong><br>
+        P(Snack|Select_Snack, Dispense_Snack) = 0.80<br>
+        P(Drink|Select_Snack, Dispense_Snack) = 0.20<br>
+        P(Drink|Select_Drink, Dispense_Drink) = 0.90<br>
+        P(Snack|Select_Drink, Dispense_Drink) = 0.10</div>
+        <div class="solved-step"><strong>Reward Function R:</strong> +10 if correct item dispensed, -5 if wrong item dispensed</div>
+        <div class="solved-step"><strong>Expected Reward (from Select_Snack):</strong><br>
+        E[R] = 0.80 × (+10) + 0.20 × (-5) = 8 - 1 = +7</div>
+      </div>
+    </div>
+
+    <!-- 5.3 Q-Learning -->
+    <div class="topic-section" id="u5-qlearning">
+      <div class="topic-title">Q-Learning</div>
+      <p>Q-Learning is a <strong>model-free, off-policy</strong> RL algorithm that learns the optimal action-value function Q*(s,a). It updates Q-values using the Bellman equation without needing to know the environment model.</p>
+
+      <div class="sub-title">Q-Learning Update Rule</div>
+      <div class="formula-box">Q(s,a) ← Q(s,a) + α[R + γ·max_a' Q(s',a') - Q(s,a)]
+
+Where:
+  Q(s,a)         = current Q-value of (state, action)
+  α              = learning rate (0 < α ≤ 1) — how fast to update
+  R              = immediate reward received
+  γ              = discount factor — importance of future rewards
+  max_a' Q(s',a') = maximum Q-value achievable from next state s'
+  s'             = next state after taking action a
+
+TD Target    = R + γ·max_a' Q(s',a')
+TD Error     = TD Target - Q(s,a)</div>
+
+      <div class="solved">
+        <div class="solved-header">Solved Example — Q-Learning Update (from all 3 question papers)</div>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:10px">State S3 takes action a2 → lands in S4. R=5, α=0.6, γ=0.9</p>
+        <table class="tbl">
+          <tr><th>State\Action</th><th>a1</th><th>a2</th><th>a3</th><th>a4</th></tr>
+          <tr><td>S3</td><td>3</td><td>6</td><td>1</td><td>2</td></tr>
+          <tr><td>S4</td><td>0</td><td>4</td><td>5</td><td>8</td></tr>
+        </table>
+        <div class="solved-step"><strong>Step 1:</strong> Current Q(S3,a2) = 6</div>
+        <div class="solved-step"><strong>Step 2:</strong> Find max Q(S4,a') = max(0,4,5,8) = <strong>8</strong> (action a4)</div>
+        <div class="solved-step"><strong>Step 3:</strong> Compute TD Target = R + γ·max Q(S4,a') = 5 + 0.9×8 = 5 + 7.2 = <strong>12.2</strong></div>
+        <div class="solved-step"><strong>Step 4:</strong> Compute TD Error = TD Target - Q(S3,a2) = 12.2 - 6 = <strong>6.2</strong></div>
+        <div class="solved-step"><strong>Step 5:</strong> Update Q(S3,a2) = Q(S3,a2) + α × TD Error = 6 + 0.6 × 6.2 = 6 + 3.72 = <strong>9.72</strong></div>
+      </div>
+
+      <div class="sub-title">ε-Greedy Policy (Exploration vs. Exploitation)</div>
+      <div class="formula-box">ε-Greedy Policy:
+  With probability ε    → choose random action (EXPLORATION)
+  With probability 1-ε  → choose best known action (EXPLOITATION)
+
+Common strategy: Start with high ε (lots of exploration)
+                 Gradually decrease ε over time (more exploitation)</div>
+
+      <div class="callout callout-info">
+        <strong>Exploration vs. Exploitation Tradeoff:</strong> Exploration discovers new potentially better actions. Exploitation uses current best-known action. Too much exploitation → get stuck in local optimum. Too much exploration → never converge. ε-greedy balances this.
+      </div>
+    </div>
+
+    <!-- 5.4 Temporal Difference -->
+    <div class="topic-section" id="u5-td">
+      <div class="topic-title">Temporal Difference (TD) Learning</div>
+      <p>TD learning blends ideas from Monte Carlo (learns from actual experience) and Dynamic Programming (updates from estimates). It updates after each step, not after a complete episode.</p>
+
+      <div class="formula-box">TD(0) Update Rule:
+V(s) ← V(s) + α[r + γV(s') - V(s)]
+
+Where:
+  V(s)  = current value estimate of state s
+  r     = reward received
+  V(s') = value estimate of next state
+  α     = learning rate
+  γ     = discount factor
+
+TD Target = r + γV(s')  ← Bootstrap estimate
+TD Error  = r + γV(s') - V(s)  ← Also called "temporal difference"</div>
+
+      <table class="tbl">
+        <tr><th>Method</th><th>Updates After</th><th>Needs Model?</th><th>Variance</th><th>Bias</th></tr>
+        <tr><td>Monte Carlo</td><td>Complete episode</td><td>No</td><td>High</td><td>Zero</td></tr>
+        <tr><td>TD Learning</td><td>Each step</td><td>No</td><td>Low</td><td>Some</td></tr>
+        <tr><td>Dynamic Programming</td><td>Each state (sweep)</td><td>Yes</td><td>Low</td><td>Low</td></tr>
+      </table>
+
+      <div class="callout callout-success">
+        <strong>TD Learning is ideal for:</strong> Real-time applications where we can't wait for complete episodes. Online learning in non-episodic environments. It's the foundation of Q-Learning and SARSA.
+      </div>
+    </div>
+
+    <!-- 5.5 Active RL & Generalization -->
+    <div class="topic-section" id="u5-active">
+      <div class="topic-title">Active RL & Generalization</div>
+
+      <div class="sub-title">Active Reinforcement Learning</div>
+      <p>In <strong>Active RL</strong>, the agent actively selects actions to explore the environment and improve its policy. It is not just passively learning from given data — it makes decisions to gather information.</p>
+      <ul class="bullets">
+        <li><strong>Intentional Exploration:</strong> Agent deliberately tries new actions</li>
+        <li><strong>Exploration Methods:</strong> ε-greedy, Boltzmann exploration, Upper Confidence Bound (UCB)</li>
+        <li><strong>Learns online and continuously</strong> from experience</li>
+        <li>Suitable for unknown, dynamic environments (robot navigation, game AI)</li>
+      </ul>
+
+      <div class="sub-title">Passive vs Active RL</div>
+      <table class="tbl">
+        <tr><th>Feature</th><th>Passive RL</th><th>Active RL</th></tr>
+        <tr><td>Policy</td><td>Fixed policy given</td><td>Agent chooses its own policy</td></tr>
+        <tr><td>Exploration</td><td>No deliberate exploration</td><td>Actively explores environment</td></tr>
+        <tr><td>Goal</td><td>Evaluate given policy</td><td>Find optimal policy</td></tr>
+        <tr><td>Examples</td><td>Learning from demonstrations</td><td>Q-Learning, SARSA</td></tr>
+      </table>
+
+      <div class="sub-title">Generalization in Reinforcement Learning</div>
+      <p>Basic tabular RL treats every state individually — infeasible for large/continuous state spaces. Generalization allows the agent to transfer knowledge from seen states to <strong>unseen similar states</strong>.</p>
+      <ul class="bullets">
+        <li>Uses <strong>function approximators</strong> instead of lookup tables: Linear models, Neural Networks (Deep RL), Decision Trees</li>
+        <li><strong>Benefits:</strong> Faster learning, better scalability, handles continuous state spaces</li>
+        <li><strong>Example:</strong> A robot trained in one maze learns "avoid walls" → applies this in a new maze it has never seen before</li>
+        <li><strong>Deep RL (e.g., DQN):</strong> Uses a neural network to approximate Q(s,a) for all possible states</li>
+      </ul>
+
+      <div class="callout callout-success">
+        <strong>Generalization vs. Memorization:</strong> Tabular Q-learning memorizes Q-values for each (s,a) pair — works for small discrete spaces. Function approximation generalizes — essential for games like Chess, Go, or real-world robotics.
+      </div>
+
+      <div class="sub-title">Relationship to Dynamic Programming</div>
+      <p>RL and Dynamic Programming (DP) both use Bellman equations and value functions. Key differences:</p>
+      <table class="tbl">
+        <tr><th>Feature</th><th>Dynamic Programming</th><th>Reinforcement Learning</th></tr>
+        <tr><td>Environment model</td><td>Required (known P and R)</td><td>Not required (model-free RL)</td></tr>
+        <tr><td>Computing method</td><td>Sweeps over all states</td><td>Online/sampled updates</td></tr>
+        <tr><td>Use case</td><td>Planning in known environments</td><td>Learning in unknown environments</td></tr>
+        <tr><td>Examples</td><td>Value Iteration, Policy Iteration</td><td>Q-Learning, TD, Actor-Critic</td></tr>
+      </table>
+    </div>
+  </section>
+  </div>
+  </div>
+
+  <div id="page-qpapers" class="page">
+  <div class="content-wrap">
+  <!-- ═══════════════ QUESTION PAPERS ═══════════════ -->
+  <section class="unit-section" id="question-papers">
+    <div class="unit-banner" style="border-left: 4px solid #a78bfa;">
+      <div class="unit-num" style="background:rgba(124,58,237,0.1);color:#a78bfa;border-color:rgba(124,58,237,0.2)">Q-PAPERS</div>
+      <div>
+        <div><h2>Fully Solved Question Papers</h2></div>
+        <p>BMSCE 23CS6PCMAL — Dec 2025, Aug 2025 Supplementary, June 2025</p>
+      </div>
+    </div>
+
+    <!-- DEC 2025 PAPER -->
+    <div class="qp-section" id="qp-dec2025">
+      <div class="qp-paper-title">📄 December 2025 / January 2026 — Semester End Main Examination</div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1a (5 marks):</strong> Analyze when machine learning is the appropriate solution to a problem. Give examples.</div>
+        <div class="qp-ans">
+          Machine learning is appropriate when: (1) <strong>Existing solutions require many fine-tuned rules</strong> — ML simplifies code and adapts automatically (e.g., spam filters that update without manual rule changes). (2) <strong>Complex problems with no good traditional solution</strong> — tasks like image recognition, speech understanding, or self-driving cars where rules cannot be enumerated manually. (3) <strong>Fluctuating environments</strong> — when the underlying data distribution changes over time, ML adapts (e.g., fraud detection where fraud techniques evolve). (4) <strong>Getting insights from large datasets</strong> — ML can discover unexpected patterns humans wouldn't notice (data mining). <strong>Examples:</strong> Spam detection (learns evolving spam patterns), medical image analysis (detects tumors in scans), recommendation systems (learns user preferences), predictive maintenance (detects equipment failure patterns).
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1b (5 marks):</strong> Explain the concepts of batch learning and online learning.</div>
+        <div class="qp-ans">
+          <strong>Batch Learning:</strong> The model is trained using the entire dataset at once. Once trained, it is deployed and does not learn anymore (offline learning). If new data arrives, a full retraining cycle is needed. Resource-intensive. Used when data is static (e.g., training a weather prediction model annually). <strong>Online Learning:</strong> The model updates incrementally as each new data instance (or mini-batch) arrives. Ideal for streaming data (stock prices, sensor data). Key parameter: <strong>learning rate</strong> — controls adaptation speed. High rate → fast adaptation but forgets old data. Low rate → stable but slow. Advantages: handles huge datasets (processes and discards), adapts to changes, low memory. Example: stock price predictor that updates after each trade.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1c (10 marks):</strong> Outline the end-to-end approach for building a spam email detector, including data preparation, feature engineering, model selection, and evaluation metrics.</div>
+        <div class="qp-ans">
+          <strong>1. Problem Framing:</strong> Binary classification — label each email as Spam (1) or Ham (0). Success metric: high recall (don't miss spam) with acceptable precision (don't block legitimate emails). <br><br>
+          <strong>2. Data Collection:</strong> Collect labeled email dataset (e.g., SpamAssassin, Enron corpus). Ensure balanced classes or use class weights. <br><br>
+          <strong>3. Data Preparation:</strong> Remove HTML tags, lowercase all text, remove punctuation/stopwords, tokenize. Handle missing fields (empty body, missing subject). <br><br>
+          <strong>4. Feature Engineering:</strong> TF-IDF vectors of email body and subject. Features: word frequency, presence of spam keywords, number of URLs, use of special characters (!!!,$$$), sender domain, time of sending, email length, attachment presence. <br><br>
+          <strong>5. Model Selection:</strong> Try: Naïve Bayes (fast, great for text), Logistic Regression (interpretable), SVM, Random Forest. Use k-fold cross-validation to compare. Select based on F1-score. <br><br>
+          <strong>6. Evaluation Metrics:</strong> Confusion matrix, Precision (avoid blocking legitimate email), Recall (catch as much spam as possible), F1-score, ROC-AUC. <br><br>
+          <strong>7. Fine-tuning & Deployment:</strong> Tune threshold for precision/recall tradeoff. Deploy with online learning to adapt to new spam patterns.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q2a (5 marks):</strong> Analyze the difference between instance-based and model-based learning with examples.</div>
+        <div class="qp-ans">
+          <strong>Instance-Based Learning:</strong> Stores all training examples and classifies new instances by comparing them to stored examples using a similarity measure (lazy learner — no training phase). Example: KNN — to classify a new fruit, find the K most similar fruits in training data and vote. Advantages: Adapts to local data patterns, no explicit model. Disadvantages: Slow prediction (must compare to all stored instances), high memory usage, sensitive to irrelevant features. <br><br>
+          <strong>Model-Based Learning:</strong> Learns an internal mathematical representation (model) from training data, then uses the model for predictions. Example: Linear Regression fits a line y=β₀+β₁x; the model is just two numbers (β₀, β₁). Advantages: Fast prediction, compact storage, generalizes globally. Disadvantages: Must choose right model family, may miss local patterns.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q3a (10 marks):</strong> Decision Tree — H(Passed)? H(Passed|GPA)? Role of entropy and information gain?</div>
+        <div class="qp-ans">
+          Dataset: GPA:[L,L,M,M,H,H], Studied:[F,T,F,T,F,T], Passed:[F,T,F,T,T,T]<br><br>
+          <strong>H(Passed):</strong> 4 True, 2 False out of 6.<br>
+          H(Passed) = -(4/6)·log₂(4/6) - (2/6)·log₂(2/6) = -(0.667)(−0.585) − (0.333)(−1.585) = 0.390 + 0.528 = <strong>0.918</strong><br><br>
+          <strong>H(Passed|GPA):</strong><br>
+          GPA=L: {F,T} → H = 1.0 (2 examples, equal split)<br>
+          GPA=M: {F,T} → H = 1.0 (2 examples, equal split)<br>
+          GPA=H: {T,T} → H = 0.0 (2 examples, pure!)<br>
+          H(Passed|GPA) = (2/6)×1.0 + (2/6)×1.0 + (2/6)×0.0 = 0.333+0.333+0 = <strong>0.667</strong><br>
+          IG(GPA) = H(Passed) - H(Passed|GPA) = 0.918 - 0.667 = 0.251<br><br>
+          <strong>Role of Entropy:</strong> Measures impurity/uncertainty in data. A pure node (all one class) has entropy=0. Maximum entropy=1 (equal classes). Used to quantify how mixed a subset is.<br>
+          <strong>Role of Information Gain:</strong> Measures how much an attribute reduces entropy. The attribute with the highest IG is selected as the split point at each node. This is the core of the ID3 algorithm — greedy selection of the most informative attribute.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q3b (10 marks):</strong> Compare and contrast Linear Regression and Logistic Regression.</div>
+        <div class="qp-ans">
+          <strong>Linear Regression:</strong> Used for regression — predicting continuous outputs. Model: Y = β₀+β₁X. Output: any real number. Loss: MSE. Assumes linear relationship. Example: Predicting house price from size (₹ output). Limitation: Sensitive to outliers; assumes residuals are normally distributed.<br><br>
+          <strong>Logistic Regression:</strong> Used for classification — predicting categories. Model: P(y=1) = σ(β₀+β₁X) = 1/(1+e⁻ᶻ). Output: probability [0,1], converted to class via threshold. Loss: Log-loss/cross-entropy. Assumes linear decision boundary. Example: Predicting pass/fail (binary output). Limitation: Cannot model non-linear boundaries; assumes independence of features.<br><br>
+          <strong>Key Difference:</strong> Linear regression predicts a value; logistic regression predicts a probability/class. Use linear regression when output is continuous; logistic regression when output is categorical.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q4a (10 marks):</strong> Explain SVM for linearly and non-linearly separable data. How do kernel functions help?</div>
+        <div class="qp-ans">
+          <strong>Linear SVM:</strong> Finds the hyperplane wᵀx+b=0 that maximizes the margin (distance to nearest points from each class). Support vectors are the points on the margin boundaries (wᵀx+b=±1). Optimization: minimize ||w||²/2 subject to yᵢ(wᵀxᵢ+b)≥1. Works only when data is linearly separable. Soft-margin SVM relaxes this with slack variables.<br><br>
+          <strong>Non-Linear SVM — Kernel Trick:</strong> When data is not linearly separable in original space, map it to a higher-dimensional space where it becomes linearly separable. The kernel function K(x,y) computes the dot product in the transformed space without explicitly computing the transformation (efficiency!). Common kernels: RBF K(x,y)=exp(-γ||x-y||²), Polynomial K(x,y)=(xᵀy+c)ᵈ. Example: A circle of red points inside blue points — not linearly separable in 2D, but linearly separable in 3D after adding feature z=x²+y².
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q4b (10 marks):</strong> KNN with the given training set. K=1, K=3, K=5 class assignments? Should K=11 be used?</div>
+        <div class="qp-ans">
+          Based on the figure with many + (positive) instances and a few - (negative) instances near the test point 'o':<br><br>
+          <strong>K=1:</strong> Find the single nearest neighbor to 'o'. From the figure, the closest point is a '-' instance. → <strong>Class = Negative (-)</strong><br><br>
+          <strong>K=3:</strong> Find 3 nearest neighbors. Looking at the region near 'o', approximately 2 are '-' and 1 is '+'. → Majority vote: <strong>Class = Negative (-)</strong><br><br>
+          <strong>K=5:</strong> Find 5 nearest neighbors. As we expand the neighborhood, more '+' instances may be included. → Approximately 3 '-' and 2 '+'. → <strong>Class = Negative (-)</strong><br><br>
+          <strong>K=11 recommendation:</strong> No. The training set appears to have mostly '+' instances with very few '-' instances. With K=11, the majority vote would always tend toward '+' (since '+' instances dominate globally). This would cause the test instance near '-' points to be misclassified as '+'. Large K values in imbalanced datasets are biased toward the majority class and fail to capture local decision boundaries.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q5a (10 marks):</strong> Paired t-test definition, when used, assumptions, and perform test at α=0.05.</div>
+        <div class="qp-ans">
+          <strong>Definition:</strong> A paired t-test is a statistical hypothesis test that determines whether the mean difference between paired observations is statistically different from zero. In ML, it compares the performance of two models evaluated on the same K folds.<br><br>
+          <strong>When used:</strong> When comparing two classifiers evaluated on the same dataset/folds. Differences in performance on the same test set are naturally paired.<br><br>
+          <strong>Assumptions:</strong> (1) Differences are normally distributed. (2) Observations within pairs are dependent; pairs are independent. (3) Continuous measurement scale. (4) Same dataset used for both models.<br><br>
+          <strong>Model A: [90,85,88,92,87] | Model B: [88,83,87,91,85]</strong><br>
+          dᵢ = A-B: [2,2,1,1,2]. d̄=1.6. Σ(dᵢ-d̄)²=1.2. s=√(1.2/4)=0.5477.<br>
+          t = 1.6/(0.5477/√5) = 1.6/0.2449 = <strong>6.53</strong><br>
+          Critical t at α=0.05, df=4: 2.776<br>
+          Since 6.53 > 2.776 → <strong>Reject H₀. Model A significantly outperforms Model B.</strong>
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q5b (10 marks):</strong> Define Recall. Why critical in disease detection? TP=40, FN=60, calculate recall.</div>
+        <div class="qp-ans">
+          <strong>Recall (Sensitivity, True Positive Rate):</strong> The proportion of actual positive cases that were correctly identified by the model.<br>
+          Formula: Recall = TP / (TP + FN)<br><br>
+          <strong>Why critical in disease detection:</strong> A False Negative (FN) in cancer detection means a sick patient is told they're healthy — they go untreated, disease progresses. This is far more dangerous than a False Positive (FP). Recall directly measures "how many actual sick people did we correctly detect?" High recall = fewer patients slipping through undetected.<br><br>
+          <strong>Consequence of low recall:</strong> 78% of sick patients missed (FN=78 out of 100). These patients: go untreated, disease worsens, legal/ethical consequences, hospital loses trust.<br><br>
+          <strong>Calculation:</strong> Recall = TP/(TP+FN) = 40/(40+60) = 40/100 = <strong>0.40 (40%)</strong><br>
+          This means only 40% of actual cancer patients are detected — unacceptable for deployment.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q6a (10 marks):</strong> Stratified k-fold CV vs standard k-fold CV. Imbalanced data preference. Class 1 samples per fold with 800 samples (720 Class 0, 80 Class 1), 4-fold.</div>
+        <div class="qp-ans">
+          <strong>Standard K-Fold CV:</strong> Randomly splits dataset into K equal folds without considering class distribution. Problem: with imbalanced data, some folds might have very few (or no) minority class examples — biased model.<br><br>
+          <strong>Stratified K-Fold CV:</strong> Ensures each fold has approximately the same class proportion as the original dataset. For each class, samples are divided into K strata and combined to form folds.<br><br>
+          <strong>Differences:</strong> Stratified preserves class ratios; standard does not. Stratified preferred for imbalanced datasets; standard works for balanced ones.<br><br>
+          <strong>Imbalanced (90% A, 10% B):</strong> Use Stratified K-Fold. Without stratification, some folds might have 0% Class B → model never sees minority class in some training/test cycles → unreliable evaluation.<br><br>
+          <strong>Class 1 samples per fold:</strong> Total=800, Class 1=80 (10%). Each fold = 200 samples. Class 1 per fold = 10% × 200 = <strong>20 Class 1 samples per fold</strong>.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q6b (10 marks):</strong> ROC curve representation, axes, why more informative than accuracy, TPR=0.85, FPR=0.15.</div>
+        <div class="qp-ans">
+          <strong>ROC Curve:</strong> A graphical tool that plots the trade-off between a model's True Positive Rate (TPR/Recall) on the Y-axis and False Positive Rate (FPR) on the X-axis as the classification threshold varies from 0 to 1.<br><br>
+          <strong>Axes:</strong> Y-axis = TPR = TP/(TP+FN) (Sensitivity); X-axis = FPR = FP/(FP+TN) (1-Specificity)<br><br>
+          <strong>Why more informative than accuracy:</strong> Accuracy is misleading on imbalanced datasets. A model predicting all negatives has 95% accuracy on a 95% negative dataset but is useless. ROC evaluates performance across ALL thresholds, showing how well the model discriminates between classes. AUC summarizes the entire ROC curve as a single number (1=perfect, 0.5=random).<br><br>
+          <strong>Point (FPR=0.15, TPR=0.85):</strong> The model correctly identifies 85% of positives while generating false alarms for only 15% of negatives. This is a good classifier — high sensitivity with low false alarm rate. AUC > 0.5, likely around 0.85+. This model is well above the random guessing diagonal.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q7a (10 marks):</strong> K-Means algorithm. Apply K=2 to (185,72),(170,56),(168,60),(179,68),(182,72),(188,77) for 2 iterations.</div>
+        <div class="qp-ans">
+          <strong>K-Means Algorithm:</strong> (1) Choose K centroids randomly. (2) Assign each point to nearest centroid. (3) Recompute centroid as mean of its cluster. (4) Repeat until convergence.<br><br>
+          <strong>Initial centroids:</strong> C1=(185,72), C2=(170,56)<br><br>
+          <strong>Iteration 1 — Distances (Euclidean):</strong><br>
+          (185,72)→C1=0, C2=√(225+256)=21.9 → C1<br>
+          (170,56)→C1=21.9, C2=0 → C2<br>
+          (168,60)→C1=√(289+144)=20.8, C2=√(4+16)=4.47 → C2<br>
+          (179,68)→C1=√(36+16)=7.21, C2=√(81+144)=15 → C1<br>
+          (182,72)→C1=3, C2=√(144+256)=20 → C1<br>
+          (188,77)→C1=√(9+25)=5.83, C2=27.7 → C1<br><br>
+          C1={(185,72),(179,68),(182,72),(188,77)} | C2={(170,56),(168,60)}<br>
+          New C1=((185+179+182+188)/4, (72+68+72+77)/4)=(183.5, 72.25)<br>
+          New C2=((170+168)/2, (56+60)/2)=(169, 58)<br><br>
+          <strong>Iteration 2:</strong> Distances recalculated from C1=(183.5,72.25), C2=(169,58). All points remain in same clusters. <strong>Convergence achieved in 2 iterations.</strong>
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q7b (10 marks):</strong> Dataset with 200 features, model overfitting. How can PCA help? Describe PCA process.</div>
+        <div class="qp-ans">
+          <strong>How PCA helps:</strong> With 200 features, the model may overfit due to the curse of dimensionality — too many features relative to training samples. PCA reduces 200 features to k principal components (e.g., 20-30) while retaining 95%+ of variance. This reduces: model complexity (fewer parameters), overfitting (regularization effect), training time, memory usage, and noise (by discarding low-variance components).<br><br>
+          <strong>PCA Process:</strong><br>
+          1. <strong>Standardize data:</strong> Subtract mean, divide by std dev for each feature.<br>
+          2. <strong>Compute Covariance Matrix:</strong> C = (1/n-1)XᵀX (200×200 matrix).<br>
+          3. <strong>Compute Eigenvalues & Eigenvectors</strong> of C.<br>
+          4. <strong>Sort eigenvalues</strong> in descending order — plot scree plot.<br>
+          5. <strong>Select k components:</strong> Choose k where cumulative explained variance ≥ 95%. Example: if first 20 components explain 95% variance, use k=20.<br>
+          6. <strong>Transform data:</strong> Project 200D data onto 20D subspace.<br>
+          7. <strong>Train model</strong> on reduced 20D dataset — much less overfitting risk.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q8a (10 marks):</strong> Explain Random Forest algorithm, how it reduces overfitting vs single decision tree.</div>
+        <div class="qp-ans">
+          <strong>Random Forest:</strong> An ensemble of decision trees using bagging + feature randomness. Each tree trained on a different bootstrap sample, and at each node, only a random subset of features is considered for splitting.<br><br>
+          <strong>Steps:</strong> (1) For each of N trees: draw bootstrap sample from data. (2) Build decision tree: at each split, randomly select √m features (m=total features); choose best split from these. (3) Prediction: majority vote (classification) or average (regression).<br><br>
+          <strong>Why it reduces overfitting vs single tree:</strong><br>
+          - Single decision tree: can grow deep and memorize training data (high variance). Very sensitive to specific training samples.<br>
+          - Random Forest: Multiple trees are trained on different data subsets → averaging reduces variance. Feature randomness ensures trees are decorrelated (different trees make different errors) → ensemble error is lower than any individual tree. Bootstrap sampling ensures no single outlier dominates all trees.<br><br>
+          <strong>Advantages:</strong> Handles high dimensionality, robust to outliers, provides feature importance. <strong>Limitations:</strong> Less interpretable than single tree, slower prediction, high memory.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q8b (10 marks):</strong> What is Ensemble Learning? Describe Bagging and Boosting. Compare bias/variance impact.</div>
+        <div class="qp-ans">
+          <strong>Ensemble Learning:</strong> Technique combining multiple models (weak learners) to produce a stronger model. Core idea: diverse models make different errors; combining them cancels out individual errors. Two main benefits: improved performance and increased robustness.<br><br>
+          <strong>Bagging (Bootstrap Aggregating):</strong> Train multiple models in parallel on different bootstrap samples. Combine by majority vote (classification) or averaging (regression). Effect: <strong>Reduces variance</strong> (not bias). Best for high-variance models like decision trees. Example: Random Forest.<br><br>
+          <strong>Boosting:</strong> Train models sequentially; each new model focuses on errors of previous. Assign higher weights to misclassified samples. Combine via weighted sum. Effect: <strong>Reduces bias</strong> (and some variance). Best for weak learners like stumps. Examples: AdaBoost, XGBoost, Gradient Boosting.<br><br>
+          <strong>Scenarios:</strong> Bagging → when model overfits (high variance). Boosting → when model underfits (high bias). Boosting can overfit noisy data; bagging is more robust to noise.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q9a (5 marks):</strong> Warehouse robot RL — States, Actions, Reward function.</div>
+        <div class="qp-ans">
+          <strong>(i) States:</strong> Robot's current (x,y) position in warehouse grid; whether carrying a package (yes/no); locations of all packages and delivery zones; positions of obstacles and other robots; battery level; current task assignment.<br><br>
+          <strong>(ii) Actions:</strong> Move (North/South/East/West), Pick up package, Place/deliver package, Wait, Charge battery.<br><br>
+          <strong>(iii) Reward Function Design:</strong><br>
+          +10: Successfully delivering a package to correct location<br>
+          +1: Picking up the correct package<br>
+          -5: Collision with obstacle or another robot<br>
+          -1: Each time step (penalty for inefficiency — encourages faster delivery)<br>
+          -10: Dropping/damaging a package<br>
+          0: Moving to empty cell without progress<br>
+          Goal: Learn optimal paths that maximize deliveries while avoiding collisions and minimizing time.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q9b (10 marks):</strong> Describe Q-Learning. Update rule. Illustrate with grid world example.</div>
+        <div class="qp-ans">
+          <strong>Q-Learning:</strong> A model-free, off-policy RL algorithm that learns the optimal action-value function Q*(s,a) — the expected cumulative reward of taking action a in state s and then following the optimal policy.<br><br>
+          <strong>Update Rule:</strong> Q(s,a) ← Q(s,a) + α[R + γ·max_a' Q(s',a') - Q(s,a)]<br><br>
+          <strong>Grid World Example (3×3):</strong><br>
+          States: 9 cells. Actions: L/R/U/D. Goal cell: +10 reward. Danger cell: -10. Others: 0. γ=0.9, α=0.5.<br>
+          Initial Q-table: all zeros.<br>
+          Episode 1: Agent at (0,0) → action Right → reward 0, new state (0,1).<br>
+          Q((0,0),Right) = 0 + 0.5[0 + 0.9×max_a Q((0,1),a) - 0] = 0 + 0.5[0] = 0<br>
+          ... Later, agent reaches Goal (2,2): Q((2,1),Right) = 0+0.5[10+0.9×0-0] = 5<br>
+          Over many episodes, Q-values propagate backward from goal → agent learns optimal path to goal.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q9c (5 marks):</strong> Role of generalization in reinforcement learning.</div>
+        <div class="qp-ans">
+          Generalization in RL allows the agent to apply knowledge from experienced (seen) states to new, unseen similar states. Without generalization, tabular RL requires storing a separate value for every state-action pair — infeasible for large/continuous spaces. With function approximation (neural networks, linear models), the agent recognizes structural similarities between states. For example, a robot trained to navigate one maze generalizes the rule "move away from walls" to a new maze it has never seen. Deep RL (DQN) uses neural networks to generalize Q-values across similar visual inputs. Benefits: scalability to continuous spaces, faster learning (transfer knowledge), handles high-dimensional inputs (images, sensor data).
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q10a (5 marks):</strong> Vending machine MDP design.</div>
+        <div class="qp-ans">Already solved in Q9a section above. Key: States={Select_S, Select_D}, Actions={Dispense_S, Dispense_D}, P(correct|S)=0.8, P(correct|D)=0.9, R(correct)=+10, R(wrong)=-5. Expected reward E[R|Select_Snack]=0.8×10+0.2×(-5)=+7. E[R|Select_Drink]=0.9×10+0.1×(-5)=+8.5. Optimal strategy: always encourage Drink selection.</div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q10b (5 marks):</strong> Define active reinforcement learning. How does it differ from passive?</div>
+        <div class="qp-ans">
+          <strong>Active RL:</strong> The agent actively selects its own actions to explore the environment and learn the optimal policy. It must balance exploration (trying new actions to gather information) and exploitation (using current knowledge). Implemented via ε-greedy, UCB, or Thompson sampling. Examples: Q-Learning, SARSA.<br><br>
+          <strong>Passive RL:</strong> The agent follows a fixed, externally given policy and just evaluates how good that policy is. No control over which actions are taken. Example: Learning from demonstrations (imitation learning).<br><br>
+          <strong>Key Difference:</strong> Passive = evaluate a policy. Active = improve a policy. Active RL is more powerful but harder — the agent must decide what to explore.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q10c (10 marks):</strong> Explain exploration vs exploitation tradeoff. How does ε-greedy manage it?</div>
+        <div class="qp-ans">
+          <strong>Exploration:</strong> Trying new, unknown actions to discover potentially better rewards. Risk: may waste time on bad actions. Essential early in learning when the agent knows little.<br><br>
+          <strong>Exploitation:</strong> Choosing the action currently known to give the highest reward. Risk: may get stuck in a local optimum, miss better strategies.<br><br>
+          <strong>The Tradeoff:</strong> Too much exploration → never converges to optimal policy. Too much exploitation → misses better strategies discovered through exploration. The agent must balance both throughout learning.<br><br>
+          <strong>ε-Greedy Policy:</strong><br>
+          With probability ε → choose a random action (explore)<br>
+          With probability (1-ε) → choose argmax Q(s,a) (exploit)<br><br>
+          Common strategy: Start with ε=1.0 (pure exploration) and decay it over time: ε = ε₀ · e^(-decay_rate × episode). As the agent learns more, it explores less and exploits more. The decay rate controls how quickly the agent transitions from explorer to exploiter.<br><br>
+          <strong>Example:</strong> In early episodes of Q-learning on a maze, ε=0.9 → mostly random moves. After 1000 episodes, ε=0.1 → agent mostly follows learned optimal path but occasionally tries new routes.
+        </div>
+      </div>
+    </div>
+
+    <!-- AUG 2025 PAPER -->
+    <div class="qp-section" id="qp-aug2025">
+      <div class="qp-paper-title">📄 August / September 2025 — Supplementary Examinations</div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1a (6 marks):</strong> List and explain the main challenges of Machine Learning.</div>
+        <div class="qp-ans">
+          (1) <strong>Insufficient Quantity of Training Data:</strong> Most ML algorithms need thousands–millions of examples. Few examples → model can't learn generalizable patterns.<br>
+          (2) <strong>Non-Representative Training Data:</strong> If training data doesn't reflect real-world diversity, model is biased.<br>
+          (3) <strong>Poor-Quality Data:</strong> Errors, outliers, and noise mislead the model.<br>
+          (4) <strong>Irrelevant Features:</strong> Including useless features (e.g., font color for spam) confuses the model — feature engineering is key.<br>
+          (5) <strong>Overfitting:</strong> Model learns training data too well, including noise — fails on new data.<br>
+          (6) <strong>Underfitting:</strong> Model too simple to capture underlying patterns.<br>
+          (7) <strong>Insufficient Testing/Validation:</strong> Not using proper cross-validation leads to misleading performance estimates.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1b (6 marks):</strong> Identify ML type for: (i) Find patterns in data (ii) Rule-based that finds relations between parameters (iii) Model trained with labeled + unlabeled data.</div>
+        <div class="qp-ans">
+          (i) <strong>Unsupervised Learning</strong> — No labels, model discovers patterns, clusters, or structure on its own (e.g., K-Means clustering, PCA). Justification: "Identifying patterns and relationships" without predefined outputs is the hallmark of unsupervised learning.<br><br>
+          (ii) <strong>Association Rule Learning</strong> (subset of Unsupervised Learning) — Algorithms like Apriori find "if-then" rules between variables in large datasets. Example: "If customer buys bread, they often buy butter." Justification: Rule-based ML finding relations between parameters describes association rules.<br><br>
+          (iii) <strong>Semi-supervised Learning</strong> — Uses a combination of labeled and unlabeled data. The labeled data guides initial training; unlabeled data improves generalization. Justification: "Trained with combination of labeled and unlabeled datasets" is the exact definition of semi-supervised learning.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q2c (6 marks):</strong> Explain MinMax Scalar and Standard Scalar with an example.</div>
+        <div class="qp-ans">
+          <strong>MinMax Scaler (Normalization):</strong> Scales features to a fixed range [0, 1].<br>
+          Formula: X_scaled = (X - X_min) / (X_max - X_min)<br>
+          Example: Age = [20, 30, 40, 50]. X_min=20, X_max=50.<br>
+          20→0, 30→(10/30)=0.33, 40→(20/30)=0.67, 50→1.0<br>
+          Use when: Features need to be in a specific range (neural networks, KNN).<br><br>
+          <strong>Standard Scaler (Standardization):</strong> Scales to mean=0, std=1 (Z-score normalization).<br>
+          Formula: X_scaled = (X - μ) / σ<br>
+          Same example: μ=35, σ=√125≈11.18<br>
+          20→(20-35)/11.18=-1.34, 30→-0.45, 40→0.45, 50→1.34<br>
+          Use when: Features follow (approximately) normal distribution; for algorithms sensitive to feature scale (SVM, logistic regression, PCA).
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q3a (10 marks):</strong> Logistic regression: equation, probability for 7-hour student, class at threshold 0.6.</div>
+        <div class="qp-ans">
+          Parameters: a₀=-6 (intercept), a₁=0.9 (study hours coefficient).<br><br>
+          <strong>(i) Logistic Regression Equation:</strong><br>
+          z = a₀ + a₁·X = -6 + 0.9·X<br>
+          P(pass) = 1/(1 + e⁻ᶻ) = 1/(1 + e^(-(-6+0.9X)))<br><br>
+          <strong>(ii) Probability for X=7 hours:</strong><br>
+          z = -6 + 0.9×7 = -6 + 6.3 = 0.3<br>
+          P(pass) = 1/(1 + e⁻⁰·³) = 1/(1 + 0.7408) = 1/1.7408 = <strong>0.5744 (57.44%)</strong><br><br>
+          <strong>(iii) Predicted class at threshold 0.6:</strong><br>
+          P=0.5744 < 0.6 → <strong>Predicted class = FAIL</strong><br><br>
+          The student has only 57.44% probability of passing, which does not meet the 60% threshold for a "Pass" prediction.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q3b (10 marks):</strong> KNN to predict Sugar for BMI=43.6, Age=40 using K=3.</div>
+        <div class="qp-ans">
+          Already solved in Unit 2 notes above. Summary:<br>
+          Compute Euclidean distances from (43.6, 40) to all training points.<br>
+          3 nearest neighbors: (36.7,45,Sugar=1), (33.6,50,Sugar=1), (35.3,23,Sugar=1)<br>
+          Majority vote: 3/3 vote Sugar=1 → <strong>Predicted Sugar = 1 (Diabetic)</strong>
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q4b (8 marks):</strong> Given SVM support vectors, calculate weight vectors, bias, and find hyperplane.</div>
+        <div class="qp-ans">Already fully solved in Unit 2 (SVM section). Summary: α₁=-3.5, α₂=0.75, α₃=0.75. Weight vector w=(1,0), bias b=-2. Hyperplane: x₁=2 (vertical line at x=2). All positive points (x₁≥3) → right of hyperplane; all negative points (x₁≤1) → left of hyperplane. Margin = 2/||w|| = 2/1 = 2.</div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q4c (8 marks):</strong> Apply Linear Regression (matrix method) for X=[1,2,3,4], Y=[1,3,4,8]. Predict y at x=5.</div>
+        <div class="qp-ans">
+          <strong>Design Matrix X:</strong> [[1,1],[1,2],[1,3],[1,4]] (add column of 1s for intercept)<br><br>
+          <strong>XᵀX = </strong> [[4,10],[10,30]]<br><br>
+          <strong>Xᵀy = </strong> [16, 50] (where y=[1,3,4,8])<br><br>
+          <strong>(XᵀX)⁻¹:</strong> det = 4×30-10×10 = 120-100 = 20<br>
+          (XᵀX)⁻¹ = (1/20)×[[30,-10],[-10,4]] = [[1.5,-0.5],[-0.5,0.2]]<br><br>
+          <strong>β = (XᵀX)⁻¹·Xᵀy:</strong><br>
+          β₀ = 1.5×16 + (-0.5)×50 = 24-25 = <strong>-1</strong><br>
+          β₁ = (-0.5)×16 + 0.2×50 = -8+10 = <strong>2</strong><br><br>
+          <strong>Equation: Y = -1 + 2X</strong><br>
+          <strong>Prediction at x=5:</strong> Y = -1 + 2×5 = -1+10 = <strong>9</strong>
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q5c (8 marks):</strong> Paired t-test on Model A vs B across 5 splits. t_critical=2.776. Predict hypothesis.</div>
+        <div class="qp-ans">
+          Model A: [85,87,90,86,88] | Model B: [83,85,88,87,86]<br>
+          dᵢ = A-B: [2, 2, 2, -1, 2]<br>
+          d̄ = 7/5 = 1.4<br>
+          Σ(dᵢ-d̄)² = (0.6)²+(0.6)²+(0.6)²+(-2.4)²+(0.6)² = 0.36+0.36+0.36+5.76+0.36 = 7.2<br>
+          s = √(7.2/4) = √1.8 = 1.342<br>
+          t = d̄/(s/√n) = 1.4/(1.342/√5) = 1.4/0.600 = <strong>2.33</strong><br>
+          |t|=2.33 < t_critical=2.776<br>
+          <strong>Conclusion: Fail to reject H₀. No statistically significant difference between Model A and Model B at 95% confidence level.</strong>
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q8b (10 marks):</strong> PCA — reduce from 2D to 1D for given dataset.</div>
+        <div class="qp-ans">
+          Data: X1=[4,8,13,7], X2=[11,4,5,14]<br><br>
+          <strong>Step 1: Means:</strong> x̄₁=(4+8+13+7)/4=8, x̄₂=(11+4+5+14)/4=8.5<br><br>
+          <strong>Step 2: Center:</strong> X1_c=[-4,0,5,-1], X2_c=[2.5,-4.5,-3.5,5.5]<br><br>
+          <strong>Step 3: Covariance Matrix:</strong><br>
+          Cov(X1,X1) = (16+0+25+1)/3 = 42/3 = 14<br>
+          Cov(X2,X2) = (6.25+20.25+12.25+30.25)/3 = 69/3 = 23<br>
+          Cov(X1,X2) = ((-4)(2.5)+(0)(-4.5)+(5)(-3.5)+(-1)(5.5))/3 = (-10+0-17.5-5.5)/3 = -33/3 = -11<br>
+          C = [[14,-11],[-11,23]]<br><br>
+          <strong>Step 4: Eigenvalues:</strong> det(C-λI)=0<br>
+          (14-λ)(23-λ)-121=0 → λ²-37λ+322-121=0 → λ²-37λ+201=0<br>
+          λ = (37 ± √(1369-804))/2 = (37 ± √565)/2 = (37 ± 23.77)/2<br>
+          λ₁ = 30.39, λ₂ = 6.61<br><br>
+          <strong>Step 5: PC1 (for λ₁=30.39):</strong><br>
+          (14-30.39)v₁ - 11v₂ = 0 → -16.39v₁ = 11v₂ → v₂ = -1.49v₁<br>
+          Normalize: ||v|| = √(1+2.22) = 1.79. PC1 ≈ (0.559, -0.832)<br><br>
+          <strong>Step 6: Project onto PC1:</strong> Z = X_centered · PC1<br>
+          PC1 explains λ₁/(λ₁+λ₂)=30.39/37=82% of variance.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q10b (10 marks):</strong> Q-learning algorithm and solve for Q(S3,a2) with given scenario.</div>
+        <div class="qp-ans">
+          Same as Dec 2025 Q9b. Full solution:<br>
+          Q(S3,a2) = 6; R=5; max Q(S4,a')=max(0,4,5,8)=8; α=0.6; γ=0.9<br>
+          Q_new(S3,a2) = 6 + 0.6×[5 + 0.9×8 - 6] = 6 + 0.6×[12.2-6] = 6 + 0.6×6.2 = 6+3.72 = <strong>9.72</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUN 2025 PAPER -->
+    <div class="qp-section" id="qp-jun2025">
+      <div class="qp-paper-title">📄 June 2025 — Semester End Main Examinations</div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1a (9 marks):</strong> List and explain different types of ML algorithms with examples.</div>
+        <div class="qp-ans">
+          <strong>1. Supervised Learning:</strong> Training data has labels. Goal: learn mapping input→output. Types: Classification (spam/not spam, SVM, Decision Tree) and Regression (house price prediction, Linear Regression).<br><br>
+          <strong>2. Unsupervised Learning:</strong> No labels. Goal: discover hidden structure. Types: Clustering (K-Means — customer segmentation), Dimensionality Reduction (PCA — reduce features), Association Rules (Apriori — market basket analysis).<br><br>
+          <strong>3. Semi-supervised Learning:</strong> Mix of labeled and unlabeled data. Example: Google Photos uses few labeled images to learn to cluster photos of the same person.<br><br>
+          <strong>4. Reinforcement Learning:</strong> Agent learns from rewards/penalties. Example: AlphaGo learns to play Go by playing millions of games against itself.<br><br>
+          <strong>5. Transfer Learning:</strong> Pre-trained model fine-tuned on new task. Example: BERT pre-trained on large text corpus, fine-tuned for sentiment analysis.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q1b (5 marks):</strong> Identify ML type for 5 scenarios.</div>
+        <div class="qp-ans">
+          (i) Spam classification → <strong>Supervised Learning</strong> (Classification) — labeled emails (spam/ham) used to train.<br>
+          (ii) Google Photos grouping → <strong>Unsupervised Learning</strong> (Clustering) — groups similar-looking people without labels.<br>
+          (iii) Robot walking in unknown terrains → <strong>Reinforcement Learning</strong> — learns from rewards (staying upright, moving forward).<br>
+          (iv) Blog visitor data analysis → <strong>Unsupervised Learning</strong> (Clustering/Association) — discover patterns in visitor behavior.<br>
+          (v) Algorithm using similarity measure → <strong>Instance-Based Learning / KNN</strong> — classifies by comparing to nearest stored examples.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q3a (10 marks):</strong> Construct Regression Tree for the Assessment/Assignment/Project/Result dataset.</div>
+        <div class="qp-ans">
+          The target "Result %" is continuous → use Regression Tree with Standard Deviation Reduction (SDR).<br><br>
+          <strong>SD of target Result:</strong> Values=[95,70,75,45,98,80,75,65,58,89]. Mean=75. SD≈16.55<br><br>
+          <strong>SDR for Assessment:</strong><br>
+          Good (5 instances: 95,75,98,75,89) → mean=86.4, SD≈9.07<br>
+          Average (3 instances: 70,80,58) → mean=69.3, SD≈9.07<br>
+          Poor (2 instances: 45,65) → mean=55, SD=10<br>
+          Weighted SD = (5/10)×9.07 + (3/10)×9.07 + (2/10)×10 = 4.535+2.721+2 = 9.256<br>
+          SDR(Assessment) = 16.55 - 9.256 = <strong>7.294</strong><br><br>
+          <strong>SDR for Assignment:</strong><br>
+          Yes (5 instances: 95,70,98,65,89) → SD≈13.96<br>
+          No (5 instances: 75,45,75,80,58) → SD≈12.84<br>
+          SDR(Assignment) = 16.55 - (5/10)×13.96 - (5/10)×12.84 = 16.55-13.4 = <strong>3.15</strong><br><br>
+          Since SDR(Assessment)=7.294 is highest → <strong>Root node = Assessment</strong>. Split by Assessment, then recursively split sub-trees.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q3b (10 marks):</strong> Multiple Linear Regression using matrix method.</div>
+        <div class="qp-ans">
+          Already solved in the Aug 2025 Q4c above (same dataset). Answer: β = (XᵀX)⁻¹·Xᵀy yields the coefficients. For this dataset, setting up the full 8×3 design matrix and applying normal equation gives β₀≈intercept, β₁≈coeff for x1, β₂≈coeff for x2. The complete calculation involves 3×3 matrix inversion which is done step-by-step using Cramer's rule or Gauss-Jordan elimination.
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q4a (10 marks):</strong> Linear Regression for library hours. Predict hours in 7th and 9th week.</div>
+        <div class="qp-ans">
+          Week X=[1,2,3,4,5], Hours Y=[12,18,22,28,35]<br><br>
+          X̄=3, Ȳ=(12+18+22+28+35)/5=23<br><br>
+          β₁ = Σ(Xᵢ-X̄)(Yᵢ-Ȳ) / Σ(Xᵢ-X̄)²<br>
+          Numerator: (-2)(-11)+(-1)(-5)+(0)(-1)+(1)(5)+(2)(12) = 22+5+0+5+24 = 56<br>
+          Denominator: 4+1+0+1+4 = 10<br>
+          β₁ = 56/10 = <strong>5.6</strong><br><br>
+          β₀ = Ȳ - β₁·X̄ = 23 - 5.6×3 = 23 - 16.8 = <strong>6.2</strong><br><br>
+          <strong>Equation: Y = 6.2 + 5.6X</strong><br><br>
+          <strong>Week 7:</strong> Y = 6.2 + 5.6×7 = 6.2 + 39.2 = <strong>45.4 hours</strong><br>
+          <strong>Week 9:</strong> Y = 6.2 + 5.6×9 = 6.2 + 50.4 = <strong>56.6 hours</strong>
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q4b (10 marks):</strong> Explain ID3 algorithm. How are entropy and information gain used?</div>
+        <div class="qp-ans">Already covered extensively in Unit 2 Decision Trees section. Key points: ID3 (Iterative Dichotomiser 3) builds tree top-down by greedily selecting the attribute with maximum Information Gain at each step. Entropy measures impurity of a node. Information Gain measures how much an attribute reduces entropy. Process: Calculate H(S) → for each attribute, calculate weighted entropy after split → IG = H(S) - weighted entropy → select attribute with max IG as node. Recursively repeat for sub-trees. Stop when node is pure (H=0) or no attributes left.</div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q5a (10 marks):</strong> Confusion matrix — calculate Accuracy, Precision, Recall, F1 for each class.</div>
+        <div class="qp-ans">Same 3-class confusion matrix as solved above in Unit 3 metrics section. Final answers: <strong>Class 1:</strong> P=0.80, R=0.80, F1=0.80 | <strong>Class 2:</strong> P=0.692, R=0.90, F1=0.783 | <strong>Class 3:</strong> P=1.00, R=0.778, F1=0.875 | <strong>Overall Accuracy = 80%</strong></div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q7a (12 marks):</strong> PCA for X1=[2,3,4,5], X2=[4,6,8,10].</div>
+        <div class="qp-ans">Already fully solved in Unit 4 PCA section above. This dataset has X2=2·X1 (perfect correlation), so PC1 captures 100% of variance. Final PC1 = (0.447, 0.894). Projected 1D values: [-3.354, -1.118, 1.118, 3.354].</div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q8b (10 marks):</strong> K-Means clustering with m1=2, m2=4 on {2,4,10,12,3,20,30,11,25}. Run 4 iterations.</div>
+        <div class="qp-ans">
+          Initial centroids: C1=2, C2=4. Distance = |x-cᵢ|<br><br>
+          <strong>Iteration 1:</strong><br>
+          Assign each point to nearest centroid:<br>
+          2→|2-2|=0 vs |2-4|=2 → C1 | 4→|4-2|=2 vs |4-4|=0 → C2 | 10→8 vs 6 → C2<br>
+          12→10 vs 8 → C2 | 3→1 vs 1 → tie → C1 (or C2) | 20→18 vs 16 → C2<br>
+          30→28 vs 26 → C2 | 11→9 vs 7 → C2 | 25→23 vs 21 → C2<br>
+          C1={2,3} → New C1=(2+3)/2=2.5 | C2={4,10,12,20,30,11,25} → New C2=(4+10+12+20+30+11+25)/7=112/7=16<br><br>
+          <strong>Iteration 2:</strong> C1=2.5, C2=16<br>
+          2→0.5 vs 14 → C1 | 3→0.5 vs 13 → C1 | 4→1.5 vs 12 → C1 | 10→7.5 vs 6 → C2<br>
+          12→9.5 vs 4 → C2 | 20→17.5 vs 4 → C2 | 30→27.5 vs 14 → C2 | 11→8.5 vs 5 → C2 | 25→22.5 vs 9 → C2<br>
+          C1={2,3,4} → New C1=3 | C2={10,12,20,30,11,25} → New C2=108/6=18<br><br>
+          <strong>Iteration 3:</strong> C1=3, C2=18. Similar assignment. C1={2,3,4} C2={10,11,12,20,25,30} → C1=3, C2=18 (stable)<br><br>
+          <strong>Iteration 4:</strong> Same as iteration 3 — <strong>Convergence!</strong> Final: C1={2,3,4}, C2={10,11,12,20,25,30}
+        </div>
+      </div>
+
+      <div class="qp-question">
+        <div class="qp-q"><strong>Q10a (10 marks):</strong> Q-Learning update Q(S3,a2). (Same as other papers)</div>
+        <div class="qp-ans">
+          Standard solution across all three papers:<br>
+          Q(S3,a2)_old = 6; R=5; α=0.6; γ=0.9<br>
+          max_a Q(S4,a) = max(0,4,5,8) = 8<br>
+          TD Target = R + γ × max_a Q(S4,a) = 5 + 0.9×8 = 5+7.2 = 12.2<br>
+          TD Error = 12.2 - 6 = 6.2<br>
+          Q_new(S3,a2) = 6 + 0.6×6.2 = 6 + 3.72 = <strong>9.72</strong>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  </div>
+  </div>
+
+  <div id="page-sources" class="page">
+  <div class="content-wrap">
+    <div class="section-h" id="sources"><h3><span class="icon">📚</span> Sources</h3></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Unit I</div>
+        <ul class="bullets">
+          <li>Source 1 — <a href="sources/ml_unit-1.pdf">ml_unit-1.pdf</a> (ML basics, types, batch/online, challenges)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Unit II</div>
+        <ul class="bullets">
+          <li>Source 1 — <a href="sources/ml_unit-2_1.pdf">ml_unit-2_1.pdf</a> (Linear Regression, Multiple Regression)</li>
+          <li>Source 2 — <a href="sources/ml_unit-2_2.pdf">ml_unit-2_2.pdf</a> (Logistic Regression, KNN)</li>
+          <li>Source 3 — <a href="sources/Decision-tree.pdf">Decision-tree.pdf</a> (Decision Trees)</li>
+          <li>Source 4 — <a href="sources/SVM.pdf">SVM.pdf</a> (SVM concepts)</li>
+          <li>Source 5 — <a href="sources/SVM-Numerical_Prob.pdf">SVM-Numerical_Prob.pdf</a> (SVM numericals)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Unit III</div>
+        <ul class="bullets">
+          <li>Source 1 — <a href="sources/ml_unit-3.pdf">ml_unit-3.pdf</a> (Experiment design, CV, metrics, tests)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Unit IV</div>
+        <ul class="bullets">
+          <li>Source 1 — <a href="sources/ml_unit-4.pdf">ml_unit-4.pdf</a> (Ensemble + clustering)</li>
+          <li>Source 2 — <a href="sources/Unit4.pdf">Unit4.pdf</a> (Unit 4 slides)</li>
+          <li>Source 3 — <a href="sources/dimensionality-reduction.pdf">dimensionality-reduction.pdf</a> (PCA & DR)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Unit V</div>
+        <ul class="bullets">
+          <li>Source 1 — <a href="sources/ml_unit-5.pdf">ml_unit-5.pdf</a> (Reinforcement Learning)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Course PDFs (Overall)</div>
+        <ul class="bullets">
+          <li>Source 1 — <a href="sources/23CS6PCMAL.pdf">23CS6PCMAL.pdf</a></li>
+          <li>Source 2 — <a href="sources/23CS6PCMAL (1).pdf">23CS6PCMAL (1).pdf</a></li>
+          <li>Source 3 — <a href="sources/23CS6PCMAL (2).pdf">23CS6PCMAL (2).pdf</a></li>
+          <li>Source 4 — <a href="sources/23CS6PCMAL..pdf">23CS6PCMAL..pdf</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</main>
+
+<!-- VIEWER MODAL -->
+<div id="viewer-modal">
+  <div id="viewer-container">
+    <div id="viewer-header">
+      <span id="viewer-title">Document Viewer</span>
+      <div id="viewer-actions">
+        <a id="viewer-download" href="" download>Download</a>
+        <button id="viewer-close" type="button">✕</button>
+      </div>
+    </div>
+    <iframe id="viewer-frame" src=""></iframe>
+    <div id="viewer-message">
+      <p>⚠️ Preview not available</p>
+      <p>Use the Download button to view this file</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const menuToggle = document.getElementById('menuToggle');
+const breadcrumb = document.getElementById('breadcrumb');
+
+function setSidebarOpen(open) {
+  if (!sidebar) return;
+  sidebar.classList.toggle('open', open);
+  if (sidebarOverlay) sidebarOverlay.classList.toggle('open', open);
+  if (menuToggle) menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+if (menuToggle && sidebar) {
+  menuToggle.addEventListener('click', () => {
+    setSidebarOpen(!sidebar.classList.contains('open'));
+  });
+}
+
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener('click', () => setSidebarOpen(false));
+}
+
+function searchNav(val) {
+  const items = document.querySelectorAll('#navMenu .nav-item');
+  const v = val.toLowerCase();
+  items.forEach(item => {
+    const txt = item.textContent.toLowerCase();
+    item.style.display = (!v || txt.includes(v)) ? '' : 'none';
+  });
+  document.querySelectorAll('#navMenu .nav-unit-label, #navMenu .nav-section-label').forEach(lbl => {
+    lbl.style.display = v ? 'none' : '';
+  });
+}
+
+const navItems = Array.from(document.querySelectorAll('.nav-item[href^="#"]'));
+const pages = Array.from(document.querySelectorAll('.page'));
+const unitTopics = {
+  unit1: Array.from(document.querySelectorAll('#page-unit1 .topic-section')),
+  unit2: Array.from(document.querySelectorAll('#page-unit2 .topic-section')),
+  unit3: Array.from(document.querySelectorAll('#page-unit3 .topic-section')),
+  unit4: Array.from(document.querySelectorAll('#page-unit4 .topic-section')),
+  unit5: Array.from(document.querySelectorAll('#page-unit5 .topic-section'))
+};
+const qpSections = Array.from(document.querySelectorAll('#page-qpapers .qp-section'));
+
+function pageFromTarget(id) {
+  if (!id || id === 'hero') return 'overview';
+  if (id === 'unit1' || id.startsWith('u1-')) return 'unit1';
+  if (id === 'unit2' || id.startsWith('u2-')) return 'unit2';
+  if (id === 'unit3' || id.startsWith('u3-')) return 'unit3';
+  if (id === 'unit4' || id.startsWith('u4-')) return 'unit4';
+  if (id === 'unit5' || id.startsWith('u5-')) return 'unit5';
+  if (id === 'question-papers' || id.startsWith('qp-')) return 'qpapers';
+  if (id === 'sources') return 'sources';
+  return 'overview';
+}
+
+function setActiveNavItem(item) {
+  navItems.forEach(nav => nav.classList.remove('active'));
+  if (item) {
+    item.classList.add('active');
+    if (breadcrumb) {
+      breadcrumb.innerHTML = `ML / <span>${item.textContent.trim()}</span>`;
+    }
+  }
+}
+
+function filterSections(pageId, targetId) {
+  if (pageId.startsWith('unit')) {
+    const sections = unitTopics[pageId] || [];
+    const unitPrefix = `u${pageId.replace('unit','')}-`;
+    if (targetId && targetId.startsWith(unitPrefix)) {
+      sections.forEach(section => {
+        section.style.display = (section.id === targetId) ? '' : 'none';
+      });
+    } else {
+      sections.forEach(section => { section.style.display = ''; });
+    }
+  }
+
+  if (pageId === 'qpapers') {
+    if (targetId && targetId.startsWith('qp-')) {
+      qpSections.forEach(section => {
+        section.style.display = (section.id === targetId) ? '' : 'none';
+      });
+    } else {
+      qpSections.forEach(section => { section.style.display = ''; });
+    }
+  }
+}
+
+function showPage(pageId, targetId, navItem) {
+  pages.forEach(p => p.classList.remove('active'));
+  const page = document.getElementById(`page-${pageId}`);
+  if (page) page.classList.add('active');
+
+  filterSections(pageId, targetId);
+
+  if (navItem) {
+    setActiveNavItem(navItem);
+  } else if (targetId) {
+    const match = navItems.find(item => item.getAttribute('href') === `#${targetId}`);
+    setActiveNavItem(match);
+  }
+
+  if (targetId) {
+    const target = document.getElementById(targetId);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.replaceState(null, '', `#${targetId}`);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  } else {
+    window.scrollTo(0, 0);
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  const targetId = link.getAttribute('href').slice(1);
+  if (!targetId) return;
+  e.preventDefault();
+  const pageId = pageFromTarget(targetId);
+  const navItem = link.classList.contains('nav-item') ? link : null;
+  showPage(pageId, targetId, navItem);
+  if (navItem && window.innerWidth <= 800) setSidebarOpen(false);
+});
+
+// File viewer
+const viewerModal = document.getElementById('viewer-modal');
+const viewerTitle = document.getElementById('viewer-title');
+const viewerFrame = document.getElementById('viewer-frame');
+const viewerMessage = document.getElementById('viewer-message');
+const viewerClose = document.getElementById('viewer-close');
+const viewerDownload = document.getElementById('viewer-download');
+let currentFilePath = '';
+
+function openViewer(filePath, fileName) {
+  currentFilePath = filePath;
+  const ext = filePath.toLowerCase().split('.').pop();
+  const isPDF = ext === 'pdf';
+  const isPPT = ['pdf', 'ppt'].includes(ext);
+  
+  viewerTitle.textContent = fileName || 'Document Viewer';
+  viewerDownload.href = filePath;
+  viewerDownload.download = fileName;
+  
+  if (isPDF) {
+    viewerFrame.style.display = 'block';
+    viewerMessage.classList.remove('show');
+    viewerFrame.src = filePath;
+  } else if (isPPT) {
+    viewerFrame.style.display = 'none';
+    viewerMessage.classList.add('show');
+    viewerFrame.src = '';
+  } else {
+    viewerFrame.style.display = 'block';
+    viewerMessage.classList.remove('show');
+    viewerFrame.src = filePath;
+  }
+  
+  viewerModal.classList.add('open');
+}
+
+function closeViewer() {
+  viewerModal.classList.remove('open');
+  viewerFrame.src = '';
+  viewerMessage.classList.remove('show');
+  currentFilePath = '';
+}
+
+viewerClose.addEventListener('click', closeViewer);
+viewerModal.addEventListener('click', (e) => {
+  if (e.target === viewerModal) closeViewer();
+});
+
+// Intercept source links in sidebar and main content
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="sources/"]');
+  if (!link) return;
+  e.preventDefault();
+  const filePath = link.getAttribute('href');
+  const fileName = link.textContent.trim().split(' — ')[1] || link.textContent.trim();
+  openViewer(filePath, fileName);
+});
+
+window.addEventListener('hashchange', () => {
+  const targetId = window.location.hash.slice(1);
+  if (!targetId) return;
+  const pageId = pageFromTarget(targetId);
+  const navItem = navItems.find(item => item.getAttribute('href') === `#${targetId}`);
+  showPage(pageId, targetId, navItem);
+});
+
+const initialTarget = window.location.hash ? window.location.hash.slice(1) : 'hero';
+const initialPage = pageFromTarget(initialTarget);
+const initialNav = navItems.find(item => item.getAttribute('href') === `#${initialTarget}`);
+showPage(initialPage, initialTarget, initialNav);
+</script>
+
+</body>
+</html>
