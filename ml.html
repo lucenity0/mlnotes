@@ -42,11 +42,8 @@ body {
 /* ── SIDEBAR ── */
 #sidebar {
   position: fixed;
-  top: 0; left: 0;
+  top: 0; left: 0; bottom: 0;
   width: 280px;
-  height: 100vh;
-  height: 100svh;
-  height: calc(var(--vh, 1vh) * 100);
   background: var(--bg2);
   border-right: 1px solid var(--border);
   overflow-y: auto;
@@ -3171,13 +3168,6 @@ TD Error  = r + γV(s') - V(s)  ← Also called "temporal difference"</div>
 </div>
 
 <script>
-// Lock viewport height to initial value — prevents browser address bar
-// sliding in/out from causing layout jumps on iPad/mobile Safari/Chrome
-(function() {
-  var vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', vh + 'px');
-})();
-
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
 const menuToggle = document.getElementById('menuToggle');
