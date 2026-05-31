@@ -3344,13 +3344,16 @@ async function renderAllPages() {
 async function openViewer(filePath, fileName) {
   if (!window.pdfjsLib) {
     viewerDl.href = filePath;
-    viewerDl.download = fileName || '';
+    viewerDl.setAttribute('download', fileName || '');
+    viewerDl.target = '_blank';
     viewerTitle.textContent = fileName || 'Document';
     viewerLoading.classList.remove('show');
     viewerMessage.classList.add('show');
     viewerModal.classList.add('open');
     return;
   }
+  viewerDl.href = filePath;
+  viewerDl.download = fileName || '';
   pdfDoc = null; totalPages = 0;
   viewerWrap.innerHTML = '';
   viewerWrap.style.display = 'none';
@@ -3388,7 +3391,7 @@ viewerClose.addEventListener('click', closeViewer);
 viewerModal.addEventListener('click', (e) => { if (e.target === viewerModal) closeViewer(); });
 
 document.addEventListener('click', (e) => {
-  const link = e.target.closest('a[href^="sources/"]');
+  const link = e.target.closest('#navMenu a[href^="sources/"]');
   if (!link) return;
   e.preventDefault();
   const filePath = link.getAttribute('href');
