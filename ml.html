@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>Machine Learning Notes — 23CS6PCMAL</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -45,6 +45,8 @@ body {
   top: 0; left: 0;
   width: 280px;
   height: 100vh;
+  height: 100svh;
+  height: calc(var(--vh, 1vh) * 100);
   background: var(--bg2);
   border-right: 1px solid var(--border);
   overflow-y: auto;
@@ -116,6 +118,7 @@ body {
   margin-left: 280px;
   padding: 0;
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 /* ── HERO ── */
@@ -3168,6 +3171,13 @@ TD Error  = r + γV(s') - V(s)  ← Also called "temporal difference"</div>
 </div>
 
 <script>
+// Lock viewport height to initial value — prevents browser address bar
+// sliding in/out from causing layout jumps on iPad/mobile Safari/Chrome
+(function() {
+  var vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+})();
+
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
 const menuToggle = document.getElementById('menuToggle');
