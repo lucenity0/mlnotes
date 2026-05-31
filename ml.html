@@ -55,7 +55,10 @@ body {
 }
 #sidebar::-webkit-scrollbar { width: 4px; }
 #sidebar::-webkit-scrollbar-track { background: transparent; }
-#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#sidebar::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; transition: background 0.2s; }
+#sidebar:hover::-webkit-scrollbar-thumb { background: var(--border); }
+#sidebar { scrollbar-width: none; }
+#sidebar:hover { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
 .sidebar-header {
   padding: 24px 20px 16px;
@@ -482,7 +485,7 @@ ol.steps li::marker { color: var(--accent); font-family: 'JetBrains Mono'; font-
 #progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); z-index: 999; transition: width 0.1s; }
 
 /* ── ANCHOR ── */
-h2[id], h3[id], .topic-section[id] { scroll-margin-top: 24px; }
+h2[id], h3[id], .topic-section[id] { scroll-margin-top: 64px; }
 
 /* ── UNIT COLORS ── */
 .u1 { border-left-color: #00d4ff; }
@@ -566,7 +569,12 @@ body {
   min-height: 0;
   padding-bottom: 40px;
 }
-#sidebar::-webkit-scrollbar-thumb { background: #444; }
+#navMenu::-webkit-scrollbar { width: 4px; }
+#navMenu::-webkit-scrollbar-track { background: transparent; }
+#navMenu::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; transition: background 0.2s; }
+#navMenu:hover::-webkit-scrollbar-thumb { background: #444; }
+#navMenu { scrollbar-width: none; }
+#navMenu:hover { scrollbar-width: thin; scrollbar-color: #444 transparent; }
 
 .sidebar-overlay {
   position: fixed;
@@ -3279,7 +3287,8 @@ function showPage(pageId, targetId, navItem) {
   if (targetId) {
     const target = document.getElementById(targetId);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const offset = target.getBoundingClientRect().top + window.scrollY - 68;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
       history.replaceState(null, '', `#${targetId}`);
     } else {
       window.scrollTo(0, 0);
