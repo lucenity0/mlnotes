@@ -555,6 +555,13 @@ body {
   border-right: none;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+}
+#navMenu {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+  padding-bottom: 40px;
 }
 #sidebar::-webkit-scrollbar-thumb { background: #444; }
 
@@ -808,51 +815,102 @@ body {
 #viewer-container {
   background: #fff;
   border-radius: 8px;
-  width: 90%;
+  width: 92%;
+  max-width: 900px;
   height: 90vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 #viewer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-bottom: 1px solid var(--border);
   background: var(--bg2);
+  flex-shrink: 0;
 }
-#viewer-title { font-size: 14px; font-weight: 600; color: var(--text); }
+#viewer-title { font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 55%; }
 #viewer-actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 }
+#viewer-page-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text2);
+}
+#viewer-page-controls button {
+  width: 28px; height: 28px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+#viewer-page-controls button:disabled { opacity: 0.35; cursor: default; }
 #viewer-download {
-  padding: 8px 16px;
+  padding: 6px 14px;
   background: var(--accent);
   color: var(--bg);
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
+  text-decoration: none;
+  display: inline-flex; align-items: center;
   transition: opacity 0.2s;
 }
-#viewer-download:hover { opacity: 0.9; }
+#viewer-download:hover { opacity: 0.85; }
 #viewer-close {
   background: none;
   border: none;
   font-size: 20px;
   cursor: pointer;
   color: var(--text3);
+  padding: 0 4px;
 }
 #viewer-close:hover { color: var(--text); }
-#viewer-frame {
+
+/* pdf.js canvas scroll area */
+#viewer-canvas-wrap {
   flex: 1;
-  border: none;
-  width: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: #6b6b6b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  gap: 12px;
+  -webkit-overflow-scrolling: touch;
 }
+#viewer-canvas-wrap canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  background: #fff;
+  border-radius: 2px;
+}
+#viewer-loading {
+  display: none;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  font-size: 14px;
+  gap: 10px;
+}
+#viewer-loading.show { display: flex; }
 #viewer-message {
   display: none;
   flex: 1;
@@ -3091,11 +3149,17 @@ TD Error  = r + γV(s') - V(s)  ← Also called "temporal difference"</div>
     <div id="viewer-header">
       <span id="viewer-title">Document Viewer</span>
       <div id="viewer-actions">
+        <div id="viewer-page-controls">
+          <button id="viewer-prev" type="button" title="Previous page">&#8249;</button>
+          <span id="viewer-page-info">1 / 1</span>
+          <button id="viewer-next" type="button" title="Next page">&#8250;</button>
+        </div>
         <a id="viewer-download" href="" download>Download</a>
         <button id="viewer-close" type="button">✕</button>
       </div>
     </div>
-    <iframe id="viewer-frame" src=""></iframe>
+    <div id="viewer-loading" class="show">Loading PDF…</div>
+    <div id="viewer-canvas-wrap"></div>
     <div id="viewer-message">
       <p>⚠️ Preview not available</p>
       <p>Use the Download button to view this file</p>
@@ -3234,53 +3298,136 @@ document.addEventListener('click', (e) => {
   if (navItem && window.innerWidth <= 800) setSidebarOpen(false);
 });
 
-// File viewer
-const viewerModal = document.getElementById('viewer-modal');
-const viewerTitle = document.getElementById('viewer-title');
-const viewerFrame = document.getElementById('viewer-frame');
+// ── PDF VIEWER (pdf.js canvas — works on mobile/tablet/desktop) ──
+const viewerModal   = document.getElementById('viewer-modal');
+const viewerTitle   = document.getElementById('viewer-title');
+const viewerLoading = document.getElementById('viewer-loading');
+const viewerWrap    = document.getElementById('viewer-canvas-wrap');
 const viewerMessage = document.getElementById('viewer-message');
-const viewerClose = document.getElementById('viewer-close');
-const viewerDownload = document.getElementById('viewer-download');
-let currentFilePath = '';
+const viewerClose   = document.getElementById('viewer-close');
+const viewerDl      = document.getElementById('viewer-download');
+const viewerPrev    = document.getElementById('viewer-prev');
+const viewerNext    = document.getElementById('viewer-next');
+const viewerPageInfo= document.getElementById('viewer-page-info');
 
-function openViewer(filePath, fileName) {
-  currentFilePath = filePath;
-  const ext = filePath.toLowerCase().split('.').pop();
-  const isPDF = ext === 'pdf';
-  const isPPT = ['pdf', 'ppt'].includes(ext);
-  
-  viewerTitle.textContent = fileName || 'Document Viewer';
-  viewerDownload.href = filePath;
-  viewerDownload.download = fileName;
-  
-  if (isPDF) {
-    viewerFrame.style.display = 'block';
-    viewerMessage.classList.remove('show');
-    viewerFrame.src = filePath;
-  } else if (isPPT) {
-    viewerFrame.style.display = 'none';
-    viewerMessage.classList.add('show');
-    viewerFrame.src = '';
-  } else {
-    viewerFrame.style.display = 'block';
-    viewerMessage.classList.remove('show');
-    viewerFrame.src = filePath;
+// pdf.js worker — use CDN matching the loaded library version
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+let pdfDoc = null;
+let currentPage = 1;
+let totalPages = 0;
+let renderTask = null;
+
+function setPageControls() {
+  viewerPageInfo.textContent = `${currentPage} / ${totalPages}`;
+  viewerPrev.disabled = currentPage <= 1;
+  viewerNext.disabled = currentPage >= totalPages;
+}
+
+async function renderPage(num) {
+  if (!pdfDoc) return;
+  if (renderTask) { renderTask.cancel(); renderTask = null; }
+
+  viewerWrap.innerHTML = '';
+  const page = await pdfDoc.getPage(num);
+
+  // Scale to fit the container width, respecting device pixel ratio
+  const containerWidth = viewerWrap.clientWidth - 32; // 16px padding each side
+  const dpr = window.devicePixelRatio || 1;
+  const viewport = page.getViewport({ scale: 1 });
+  const scale = Math.min((containerWidth / viewport.width), 2.5);
+  const scaledViewport = page.getViewport({ scale });
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width  = Math.floor(scaledViewport.width  * dpr);
+  canvas.height = Math.floor(scaledViewport.height * dpr);
+  canvas.style.width  = Math.floor(scaledViewport.width)  + 'px';
+  canvas.style.height = Math.floor(scaledViewport.height) + 'px';
+  ctx.scale(dpr, dpr);
+
+  viewerWrap.appendChild(canvas);
+  viewerWrap.scrollTop = 0;
+
+  renderTask = page.render({ canvasContext: ctx, viewport: scaledViewport });
+  try {
+    await renderTask.promise;
+  } catch(e) {
+    if (e.name !== 'RenderingCancelledException') console.warn(e);
   }
-  
+  renderTask = null;
+}
+
+async function openViewer(filePath, fileName) {
+  if (!window.pdfjsLib) {
+    viewerDl.href = filePath;
+    viewerDl.download = fileName || '';
+    viewerTitle.textContent = fileName || 'Document';
+    viewerLoading.classList.remove('show');
+    viewerMessage.classList.add('show');
+    viewerModal.classList.add('open');
+    return;
+  }
+
+  // Reset state
+  pdfDoc = null; currentPage = 1; totalPages = 0;
+  viewerWrap.innerHTML = '';
+  viewerLoading.classList.add('show');
+  viewerMessage.classList.remove('show');
+  viewerWrap.style.display = 'none';
   viewerModal.classList.add('open');
+
+  viewerTitle.textContent = fileName || filePath.split('/').pop();
+  viewerDl.href = filePath;
+  viewerDl.download = fileName || filePath.split('/').pop();
+  viewerPageInfo.textContent = '';
+  viewerPrev.disabled = true;
+  viewerNext.disabled = true;
+
+  try {
+    pdfDoc = await pdfjsLib.getDocument(filePath).promise;
+    totalPages = pdfDoc.numPages;
+    currentPage = 1;
+    setPageControls();
+    viewerLoading.classList.remove('show');
+    viewerWrap.style.display = 'flex';
+    await renderPage(currentPage);
+  } catch (err) {
+    console.error('PDF load error:', err);
+    viewerLoading.classList.remove('show');
+    viewerMessage.classList.add('show');
+  }
 }
 
 function closeViewer() {
   viewerModal.classList.remove('open');
-  viewerFrame.src = '';
+  if (renderTask) { renderTask.cancel(); renderTask = null; }
+  pdfDoc = null;
+  viewerWrap.innerHTML = '';
+  viewerWrap.style.display = 'none';
+  viewerLoading.classList.remove('show');
   viewerMessage.classList.remove('show');
-  currentFilePath = '';
 }
 
-viewerClose.addEventListener('click', closeViewer);
-viewerModal.addEventListener('click', (e) => {
-  if (e.target === viewerModal) closeViewer();
+viewerPrev.addEventListener('click', async () => {
+  if (currentPage <= 1) return;
+  currentPage--;
+  setPageControls();
+  await renderPage(currentPage);
 });
+
+viewerNext.addEventListener('click', async () => {
+  if (currentPage >= totalPages) return;
+  currentPage++;
+  setPageControls();
+  await renderPage(currentPage);
+});
+
+viewerClose.addEventListener('click', closeViewer);
+viewerModal.addEventListener('click', (e) => { if (e.target === viewerModal) closeViewer(); });
 
 // Intercept source links in sidebar and main content
 document.addEventListener('click', (e) => {
@@ -3288,7 +3435,8 @@ document.addEventListener('click', (e) => {
   if (!link) return;
   e.preventDefault();
   const filePath = link.getAttribute('href');
-  const fileName = link.textContent.trim().split(' — ')[1] || link.textContent.trim();
+  const raw = link.textContent.trim();
+  const fileName = raw.includes(' — ') ? raw.split(' — ')[1] : raw;
   openViewer(filePath, fileName);
 });
 
