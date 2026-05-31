@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ML Notes">
 <title>Machine Learning Notes — 23CS6PCMAL</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -52,7 +55,10 @@ body {
 }
 #sidebar::-webkit-scrollbar { width: 4px; }
 #sidebar::-webkit-scrollbar-track { background: transparent; }
-#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#sidebar::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; transition: background 0.2s; }
+#sidebar:hover::-webkit-scrollbar-thumb { background: var(--border); }
+#sidebar { scrollbar-width: none; }
+#sidebar:hover { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
 .sidebar-header {
   padding: 24px 20px 16px;
@@ -479,7 +485,7 @@ ol.steps li::marker { color: var(--accent); font-family: 'JetBrains Mono'; font-
 #progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); z-index: 999; transition: width 0.1s; }
 
 /* ── ANCHOR ── */
-h2[id], h3[id], .topic-section[id] { scroll-margin-top: 24px; }
+h2[id], h3[id], .topic-section[id] { scroll-margin-top: 64px; }
 
 /* ── UNIT COLORS ── */
 .u1 { border-left-color: #00d4ff; }
@@ -563,7 +569,12 @@ body {
   min-height: 0;
   padding-bottom: 40px;
 }
-#sidebar::-webkit-scrollbar-thumb { background: #444; }
+#navMenu::-webkit-scrollbar { width: 4px; }
+#navMenu::-webkit-scrollbar-track { background: transparent; }
+#navMenu::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; transition: background 0.2s; }
+#navMenu:hover::-webkit-scrollbar-thumb { background: #444; }
+#navMenu { scrollbar-width: none; }
+#navMenu:hover { scrollbar-width: thin; scrollbar-color: #444 transparent; }
 
 .sidebar-overlay {
   position: fixed;
@@ -839,23 +850,6 @@ body {
   align-items: center;
   flex-shrink: 0;
 }
-#viewer-page-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text2);
-}
-#viewer-page-controls button {
-  width: 28px; height: 28px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-}
-#viewer-page-controls button:disabled { opacity: 0.35; cursor: default; }
 #viewer-download {
   padding: 6px 14px;
   background: var(--accent);
@@ -3149,11 +3143,7 @@ TD Error  = r + γV(s') - V(s)  ← Also called "temporal difference"</div>
     <div id="viewer-header">
       <span id="viewer-title">Document Viewer</span>
       <div id="viewer-actions">
-        <div id="viewer-page-controls">
-          <button id="viewer-prev" type="button" title="Previous page">&#8249;</button>
-          <span id="viewer-page-info">1 / 1</span>
-          <button id="viewer-next" type="button" title="Next page">&#8250;</button>
-        </div>
+        <span id="viewer-page-info" style="font-size:12px;color:var(--text3);"></span>
         <a id="viewer-download" href="" download>Download</a>
         <button id="viewer-close" type="button">✕</button>
       </div>
@@ -3276,7 +3266,8 @@ function showPage(pageId, targetId, navItem) {
   if (targetId) {
     const target = document.getElementById(targetId);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const offset = target.getBoundingClientRect().top + window.scrollY - 68;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
       history.replaceState(null, '', `#${targetId}`);
     } else {
       window.scrollTo(0, 0);
@@ -3306,59 +3297,45 @@ const viewerWrap    = document.getElementById('viewer-canvas-wrap');
 const viewerMessage = document.getElementById('viewer-message');
 const viewerClose   = document.getElementById('viewer-close');
 const viewerDl      = document.getElementById('viewer-download');
-const viewerPrev    = document.getElementById('viewer-prev');
-const viewerNext    = document.getElementById('viewer-next');
 const viewerPageInfo= document.getElementById('viewer-page-info');
 
-// pdf.js worker — use CDN matching the loaded library version
 if (window.pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
 let pdfDoc = null;
-let currentPage = 1;
+let pageObserver = null;
 let totalPages = 0;
-let renderTask = null;
 
-function setPageControls() {
-  viewerPageInfo.textContent = `${currentPage} / ${totalPages}`;
-  viewerPrev.disabled = currentPage <= 1;
-  viewerNext.disabled = currentPage >= totalPages;
-}
-
-async function renderPage(num) {
-  if (!pdfDoc) return;
-  if (renderTask) { renderTask.cancel(); renderTask = null; }
-
-  viewerWrap.innerHTML = '';
-  const page = await pdfDoc.getPage(num);
-
-  // Scale to fit the container width, respecting device pixel ratio
-  const containerWidth = viewerWrap.clientWidth - 32; // 16px padding each side
+async function renderAllPages() {
+  const containerWidth = viewerWrap.clientWidth - 32;
   const dpr = window.devicePixelRatio || 1;
-  const viewport = page.getViewport({ scale: 1 });
-  const scale = Math.min((containerWidth / viewport.width), 2.5);
-  const scaledViewport = page.getViewport({ scale });
-
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width  = Math.floor(scaledViewport.width  * dpr);
-  canvas.height = Math.floor(scaledViewport.height * dpr);
-  canvas.style.width  = Math.floor(scaledViewport.width)  + 'px';
-  canvas.style.height = Math.floor(scaledViewport.height) + 'px';
-  ctx.scale(dpr, dpr);
-
-  viewerWrap.appendChild(canvas);
-  viewerWrap.scrollTop = 0;
-
-  renderTask = page.render({ canvasContext: ctx, viewport: scaledViewport });
-  try {
-    await renderTask.promise;
-  } catch(e) {
-    if (e.name !== 'RenderingCancelledException') console.warn(e);
+  for (let num = 1; num <= totalPages; num++) {
+    const page = await pdfDoc.getPage(num);
+    const viewport = page.getViewport({ scale: 1 });
+    const scale = Math.min(containerWidth / viewport.width, 2.5);
+    const scaledViewport = page.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = Math.floor(scaledViewport.width  * dpr);
+    canvas.height = Math.floor(scaledViewport.height * dpr);
+    canvas.style.width  = Math.floor(scaledViewport.width)  + 'px';
+    canvas.style.height = Math.floor(scaledViewport.height) + 'px';
+    canvas.dataset.page = num;
+    ctx.scale(dpr, dpr);
+    viewerWrap.appendChild(canvas);
+    const task = page.render({ canvasContext: ctx, viewport: scaledViewport });
+    try { await task.promise; } catch(e) { if (e.name !== 'RenderingCancelledException') console.warn(e); }
   }
-  renderTask = null;
+  if (pageObserver) pageObserver.disconnect();
+  pageObserver = new IntersectionObserver((entries) => {
+    let best = null, bestRatio = 0;
+    entries.forEach(e => { if (e.intersectionRatio > bestRatio) { bestRatio = e.intersectionRatio; best = e.target; } });
+    if (best) viewerPageInfo.textContent = best.dataset.page + ' / ' + totalPages;
+  }, { root: viewerWrap, threshold: Array.from({length: 11}, (_,i) => i/10) });
+  viewerWrap.querySelectorAll('canvas[data-page]').forEach(c => pageObserver.observe(c));
+  viewerPageInfo.textContent = '1 / ' + totalPages;
 }
 
 async function openViewer(filePath, fileName) {
@@ -3371,30 +3348,22 @@ async function openViewer(filePath, fileName) {
     viewerModal.classList.add('open');
     return;
   }
-
-  // Reset state
-  pdfDoc = null; currentPage = 1; totalPages = 0;
+  pdfDoc = null; totalPages = 0;
   viewerWrap.innerHTML = '';
+  viewerWrap.style.display = 'none';
   viewerLoading.classList.add('show');
   viewerMessage.classList.remove('show');
-  viewerWrap.style.display = 'none';
   viewerModal.classList.add('open');
-
+  viewerPageInfo.textContent = '';
   viewerTitle.textContent = fileName || filePath.split('/').pop();
   viewerDl.href = filePath;
   viewerDl.download = fileName || filePath.split('/').pop();
-  viewerPageInfo.textContent = '';
-  viewerPrev.disabled = true;
-  viewerNext.disabled = true;
-
   try {
     pdfDoc = await pdfjsLib.getDocument(filePath).promise;
     totalPages = pdfDoc.numPages;
-    currentPage = 1;
-    setPageControls();
     viewerLoading.classList.remove('show');
     viewerWrap.style.display = 'flex';
-    await renderPage(currentPage);
+    await renderAllPages();
   } catch (err) {
     console.error('PDF load error:', err);
     viewerLoading.classList.remove('show');
@@ -3404,7 +3373,7 @@ async function openViewer(filePath, fileName) {
 
 function closeViewer() {
   viewerModal.classList.remove('open');
-  if (renderTask) { renderTask.cancel(); renderTask = null; }
+  if (pageObserver) { pageObserver.disconnect(); pageObserver = null; }
   pdfDoc = null;
   viewerWrap.innerHTML = '';
   viewerWrap.style.display = 'none';
@@ -3412,24 +3381,9 @@ function closeViewer() {
   viewerMessage.classList.remove('show');
 }
 
-viewerPrev.addEventListener('click', async () => {
-  if (currentPage <= 1) return;
-  currentPage--;
-  setPageControls();
-  await renderPage(currentPage);
-});
-
-viewerNext.addEventListener('click', async () => {
-  if (currentPage >= totalPages) return;
-  currentPage++;
-  setPageControls();
-  await renderPage(currentPage);
-});
-
 viewerClose.addEventListener('click', closeViewer);
 viewerModal.addEventListener('click', (e) => { if (e.target === viewerModal) closeViewer(); });
 
-// Intercept source links in sidebar and main content
 document.addEventListener('click', (e) => {
   const link = e.target.closest('a[href^="sources/"]');
   if (!link) return;
