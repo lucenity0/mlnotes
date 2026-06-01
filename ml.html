@@ -13,13 +13,27 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
-  onload="renderMathInElement(document.body, {
-    delimiters: [
-      {left:'$$',right:'$$',display:true},
-      {left:'$',right:'$',display:false}
-    ],
-    throwOnError: false
-  });"></script>
+  onload="(function () {
+    const ref = document.getElementById('page-reference');
+    if (ref) {
+      renderMathInElement(ref, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ],
+        throwOnError: false
+      });
+    }
+
+    const targetId = window.location.hash ? window.location.hash.slice(1) : '';
+    if (targetId) {
+      const target = document.getElementById(targetId);
+      if (target && ref && ref.contains(target)) {
+        const offset = target.getBoundingClientRect().top + window.scrollY - 68;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    }
+  })();"></script>
 <style>
 :root {
   --bg: #0a0e1a;
