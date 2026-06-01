@@ -10,6 +10,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="(function () {
+    const ref = document.getElementById('page-reference');
+    if (ref) {
+      renderMathInElement(ref, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ],
+        throwOnError: false
+      });
+    }
+
+    const targetId = window.location.hash ? window.location.hash.slice(1) : '';
+    if (targetId) {
+      const target = document.getElementById(targetId);
+      if (target && ref && ref.contains(target)) {
+        const offset = target.getBoundingClientRect().top + window.scrollY - 68;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    }
+  })();"></script>
 <style>
 :root {
   --bg: #0a0e1a;
@@ -812,6 +836,156 @@ body {
 }
 .card-link:hover { border-color: var(--text); }
 
+/* ── FORMULAS & ALGORITHMS ── */
+.ref-details {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg2);
+  margin: 16px 0;
+  overflow: hidden;
+}
+.ref-details > summary {
+  cursor: pointer;
+  padding: 14px 18px;
+  font-weight: 600;
+  color: var(--heading);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+  position: relative;
+}
+.ref-details > summary::-webkit-details-marker { display: none; }
+.ref-details > summary::after {
+  content: '+';
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  font-size: 16px;
+  color: var(--text3);
+}
+.ref-details[open] > summary::after { content: '−'; }
+.ref-summary-sub { font-size: 12px; color: var(--text3); font-weight: 400; }
+
+.formula-group {
+  border-top: 1px solid var(--border);
+  padding: 16px 18px 6px;
+  background: var(--bg);
+}
+.formula-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+  margin-bottom: 10px;
+}
+.formula-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  background: var(--bg2);
+}
+.formula-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.formula-name { font-weight: 600; color: var(--heading); }
+.formula-tag {
+  border: 1px solid var(--border);
+  color: var(--text3);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.formula-eq {
+  margin: 10px 0;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--text);
+  overflow-x: auto;
+}
+.formula-components { margin-top: 6px; }
+.comp-row {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px dashed var(--border);
+}
+.comp-row:first-child { border-top: none; }
+.comp-sym {
+  min-width: 120px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+.comp-desc { color: var(--text2); font-size: 13px; }
+
+.algo-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg2);
+  margin: 12px 0;
+  overflow: hidden;
+}
+.algo-card > summary {
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--heading);
+}
+.algo-card > summary::-webkit-details-marker { display: none; }
+.algo-num {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.algo-name { font-weight: 600; }
+.algo-type { font-size: 12px; color: var(--text3); }
+.algo-unit-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.algo-body {
+  border-top: 1px solid var(--border);
+  padding: 12px 16px 4px;
+  background: var(--bg);
+}
+.algo-desc { color: var(--text2); font-size: 13.5px; margin-bottom: 10px; }
+.algo-formulas-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.algo-eq {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--text);
+  overflow-x: auto;
+}
+
 /* ── VIEWER ── */
 #viewer-modal {
   display: none;
@@ -1224,6 +1398,10 @@ ol.steps li::marker { color: var(--text); }
     <a href="#u5-qlearning" class="nav-item">Q-Learning</a>
     <a href="#u5-td" class="nav-item">Temporal Difference</a>
     <a href="#u5-active" class="nav-item">Active RL & Generalization</a>
+
+    <div class="nav-unit-label" style="margin-top:10px">Reference</div>
+    <a href="#formulas" class="nav-item">Formulas</a>
+    <a href="#algorithms" class="nav-item">Algorithms</a>
 
     <div class="nav-unit-label" style="margin-top:10px">Question Papers</div>
     <a href="#qp-dec2025" class="nav-item">Dec 2025 / Jan 2026</a>
@@ -2564,6 +2742,829 @@ TD Error  = r + γV(s') - V(s)  ← Also called "temporal difference"</div>
   </div>
   </div>
 
+  <div id="page-reference" class="page">
+  <div class="content-wrap">
+  <!-- ═══════════════ FORMULAS & ALGORITHMS ═══════════════ -->
+  <section class="unit-section" id="formulas">
+    <div class="unit-banner" style="border-left: 4px solid var(--accent);">
+      <div class="unit-num" style="background:rgba(0,212,255,0.1);color:var(--accent);border-color:rgba(0,212,255,0.2)">FORMULAS</div>
+      <div>
+        <div><h2>Formula Reference</h2></div>
+        <p>Core equations grouped by unit with quick definitions.</p>
+      </div>
+    </div>
+
+    <details class="ref-details" id="formulas-unit1">
+      <summary>
+        <span>Unit I — Foundations of Machine Learning</span>
+        <span class="ref-summary-sub">Data scaling · Bias–variance</span>
+      </summary>
+      <div class="formula-group" id="f-scaling">
+        <div class="formula-group-title">Data Preprocessing — Scaling</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Min-Max Normalization</span>
+            <span class="formula-tag">Unit I · Preprocessing</span>
+          </div>
+          <div class="formula-eq">
+            $$X_{\text{scaled}} = \frac{X - X_{\min}}{X_{\max} - X_{\min}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$X$</span><span class="comp-desc"><strong>Original value</strong> of the feature</span></div>
+            <div class="comp-row"><span class="comp-sym">$X_{\min}$</span><span class="comp-desc"><strong>Minimum</strong> value in the feature column</span></div>
+            <div class="comp-row"><span class="comp-sym">$X_{\max}$</span><span class="comp-desc"><strong>Maximum</strong> value in the feature column</span></div>
+            <div class="comp-row"><span class="comp-sym">$X_{\text{scaled}}$</span><span class="comp-desc"><strong>Scaled output</strong>, always in $[0, 1]$</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Standard Scaler (Z-score Standardization)</span>
+            <span class="formula-tag">Unit I · Preprocessing</span>
+          </div>
+          <div class="formula-eq">
+            $$X_{\text{scaled}} = \frac{X - \mu}{\sigma}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$X$</span><span class="comp-desc"><strong>Original value</strong> of the feature</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mu$</span><span class="comp-desc"><strong>Mean</strong> of the feature column</span></div>
+            <div class="comp-row"><span class="comp-sym">$\sigma$</span><span class="comp-desc"><strong>Standard deviation</strong> of the feature column</span></div>
+            <div class="comp-row"><span class="comp-sym">$X_{\text{scaled}}$</span><span class="comp-desc"><strong>Scaled output</strong> with mean 0 and std 1</span></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="ref-details" id="formulas-unit2">
+      <summary>
+        <span>Unit II — Supervised Learning</span>
+        <span class="ref-summary-sub">Regression · Logistic · KNN · Decision Trees · SVM</span>
+      </summary>
+      <div class="formula-group" id="f-linreg-simple">
+        <div class="formula-group-title">Linear Regression</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Simple Linear Regression Model</span>
+            <span class="formula-tag">Unit II · Regression</span>
+          </div>
+          <div class="formula-eq">
+            $$\hat{Y} = \beta_0 + \beta_1 X$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\hat{Y}$</span><span class="comp-desc"><strong>Predicted output</strong> (dependent variable)</span></div>
+            <div class="comp-row"><span class="comp-sym">$X$</span><span class="comp-desc"><strong>Input feature</strong> (independent variable)</span></div>
+            <div class="comp-row"><span class="comp-sym">$\beta_0$</span><span class="comp-desc"><strong>Intercept</strong> — value of $\hat{Y}$ when $X = 0$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\beta_1$</span><span class="comp-desc"><strong>Slope</strong> — change in $\hat{Y}$ per unit increase in $X$</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card" id="f-ols">
+          <div class="formula-card-header">
+            <span class="formula-name">OLS Coefficient Formulas</span>
+            <span class="formula-tag">Unit II · OLS</span>
+          </div>
+          <div class="formula-eq">
+            $$\beta_1 = \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2}$$
+            $$\beta_0 = \bar{Y} - \beta_1 \bar{X}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\bar{X}$</span><span class="comp-desc"><strong>Mean of $X$</strong> across all training samples</span></div>
+            <div class="comp-row"><span class="comp-sym">$\bar{Y}$</span><span class="comp-desc"><strong>Mean of $Y$</strong> across all training samples</span></div>
+            <div class="comp-row"><span class="comp-sym">$n$</span><span class="comp-desc"><strong>Number of training samples</strong></span></div>
+            <div class="comp-row"><span class="comp-sym">$\beta_1$</span><span class="comp-desc"><strong>Slope</strong> — minimizes sum of squared residuals</span></div>
+            <div class="comp-row"><span class="comp-sym">$\beta_0$</span><span class="comp-desc"><strong>Intercept</strong> — ensures line passes through $(\bar{X},\bar{Y})$</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-multireg">
+        <div class="formula-group-title">Multiple Linear Regression</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Multiple Regression Model</span>
+            <span class="formula-tag">Unit II · Regression</span>
+          </div>
+          <div class="formula-eq">
+            $$\hat{Y} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_k X_k$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$X_j$</span><span class="comp-desc"><strong>$j$-th feature</strong> (independent variable)</span></div>
+            <div class="comp-row"><span class="comp-sym">$\beta_j$</span><span class="comp-desc"><strong>Coefficient</strong> for the $j$-th feature</span></div>
+            <div class="comp-row"><span class="comp-sym">$k$</span><span class="comp-desc"><strong>Number of features</strong></span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Normal Equation (Matrix Form)</span>
+            <span class="formula-tag">Unit II · OLS Matrix</span>
+          </div>
+          <div class="formula-eq">
+            $$\boldsymbol{\beta} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\mathbf{X}$</span><span class="comp-desc"><strong>Design matrix</strong> — $n \times (k+1)$, first column is all 1s for intercept</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{y}$</span><span class="comp-desc"><strong>Target vector</strong> — $n \times 1$ column of observed outputs</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{X}^\top$</span><span class="comp-desc"><strong>Transpose</strong> of the design matrix</span></div>
+            <div class="comp-row"><span class="comp-sym">$(\cdot)^{-1}$</span><span class="comp-desc"><strong>Matrix inverse</strong></span></div>
+            <div class="comp-row"><span class="comp-sym">$\boldsymbol{\beta}$</span><span class="comp-desc"><strong>Coefficient vector</strong> $[\beta_0, \beta_1, \ldots, \beta_k]^\top$</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-errors">
+        <div class="formula-group-title">Regression Error Metrics</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Mean Squared Error (MSE) &amp; RMSE</span>
+            <span class="formula-tag">Unit II · Metrics</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{MSE} = \frac{1}{n}\sum_{i=1}^n (Y_i - \hat{Y}_i)^2 \qquad \text{RMSE} = \sqrt{\text{MSE}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$Y_i$</span><span class="comp-desc"><strong>Actual value</strong> for sample $i$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\hat{Y}_i$</span><span class="comp-desc"><strong>Predicted value</strong> for sample $i$</span></div>
+            <div class="comp-row"><span class="comp-sym">$n$</span><span class="comp-desc"><strong>Number of samples</strong></span></div>
+            <div class="comp-row"><span class="comp-sym">MSE</span><span class="comp-desc"><strong>Mean squared error</strong> — penalises large errors more heavily</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Mean Absolute Error (MAE) &amp; MAPE</span>
+            <span class="formula-tag">Unit II · Metrics</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{MAE} = \frac{1}{n}\sum_{i=1}^n |Y_i - \hat{Y}_i| \qquad \text{MAPE} = \frac{100}{n}\sum_{i=1}^n \left|\frac{Y_i - \hat{Y}_i}{Y_i}\right|$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">MAE</span><span class="comp-desc"><strong>Mean absolute error</strong> — average unsigned residual; robust to outliers</span></div>
+            <div class="comp-row"><span class="comp-sym">MAPE</span><span class="comp-desc"><strong>Mean absolute percentage error</strong> — error as a percentage of the actual value</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-sigmoid">
+        <div class="formula-group-title">Logistic Regression</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Sigmoid (Logistic) Function</span>
+            <span class="formula-tag">Unit II · Classification</span>
+          </div>
+          <div class="formula-eq">
+            $$\sigma(z) = \frac{1}{1 + e^{-z}} \qquad z = \beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\sigma(z)$</span><span class="comp-desc"><strong>Predicted probability</strong> $P(y=1 \mid \mathbf{x})$, always in $(0, 1)$</span></div>
+            <div class="comp-row"><span class="comp-sym">$z$</span><span class="comp-desc"><strong>Linear combination</strong> of inputs and weights (log-odds)</span></div>
+            <div class="comp-row"><span class="comp-sym">$e$</span><span class="comp-desc"><strong>Euler's number</strong> ≈ 2.718</span></div>
+            <div class="comp-row"><span class="comp-sym">$\beta_j$</span><span class="comp-desc"><strong>Learned coefficients</strong> — fit by maximum likelihood</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Decision Rule</span>
+            <span class="formula-tag">Unit II · Classification</span>
+          </div>
+          <div class="formula-eq">
+            $$\hat{y} = \begin{cases} 1 & \text{if } \sigma(z) \geq \theta \\ 0 & \text{if } \sigma(z) < \theta \end{cases}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\theta$</span><span class="comp-desc"><strong>Decision threshold</strong> — typically 0.5; tuned for precision/recall tradeoff</span></div>
+            <div class="comp-row"><span class="comp-sym">$\hat{y}$</span><span class="comp-desc"><strong>Predicted class label</strong></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-knn">
+        <div class="formula-group-title">K-Nearest Neighbors</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Euclidean Distance</span>
+            <span class="formula-tag">Unit II · KNN</span>
+          </div>
+          <div class="formula-eq">
+            $$d_E(\mathbf{a}, \mathbf{b}) = \sqrt{\sum_{j=1}^p (a_j - b_j)^2}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\mathbf{a}, \mathbf{b}$</span><span class="comp-desc"><strong>Two data points</strong> in $p$-dimensional space</span></div>
+            <div class="comp-row"><span class="comp-sym">$a_j, b_j$</span><span class="comp-desc"><strong>$j$-th feature</strong> of points $\mathbf{a}$ and $\mathbf{b}$</span></div>
+            <div class="comp-row"><span class="comp-sym">$p$</span><span class="comp-desc"><strong>Number of features</strong></span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Manhattan Distance</span>
+            <span class="formula-tag">Unit II · KNN</span>
+          </div>
+          <div class="formula-eq">
+            $$d_M(\mathbf{a}, \mathbf{b}) = \sum_{j=1}^p |a_j - b_j|$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$|\cdot|$</span><span class="comp-desc"><strong>Absolute value</strong> — sum of axis-aligned distances ("city block")</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-entropy">
+        <div class="formula-group-title">Decision Trees — Information Theory</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Entropy</span>
+            <span class="formula-tag">Unit II · ID3</span>
+          </div>
+          <div class="formula-eq">
+            $$H(S) = -\sum_{c} p_c \log_2 p_c$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$H(S)$</span><span class="comp-desc"><strong>Entropy of set $S$</strong> — measures impurity/uncertainty; ranges from 0 (pure) to 1 (max disorder for binary)</span></div>
+            <div class="comp-row"><span class="comp-sym">$c$</span><span class="comp-desc"><strong>Class label</strong> — index over all possible classes</span></div>
+            <div class="comp-row"><span class="comp-sym">$p_c$</span><span class="comp-desc"><strong>Proportion of class $c$</strong> in set $S$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\log_2$</span><span class="comp-desc"><strong>Logarithm base 2</strong> — gives entropy in bits</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Information Gain</span>
+            <span class="formula-tag">Unit II · ID3</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{IG}(S, A) = H(S) - \sum_{v \in \text{vals}(A)} \frac{|S_v|}{|S|} H(S_v)$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$A$</span><span class="comp-desc"><strong>Attribute</strong> being evaluated for the split</span></div>
+            <div class="comp-row"><span class="comp-sym">$\text{vals}(A)$</span><span class="comp-desc"><strong>Possible values</strong> of attribute $A$</span></div>
+            <div class="comp-row"><span class="comp-sym">$S_v$</span><span class="comp-desc"><strong>Subset of $S$</strong> where attribute $A = v$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\frac{|S_v|}{|S|}$</span><span class="comp-desc"><strong>Weight</strong> — fraction of samples going into branch $v$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\text{IG}(S,A)$</span><span class="comp-desc"><strong>Information gain</strong> — the entropy reduction achieved by splitting on $A$</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Standard Deviation Reduction (Regression Trees)</span>
+            <span class="formula-tag">Unit II · Regression Tree</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{SDR}(A) = \text{SD}(S) - \sum_{v} \frac{|S_v|}{|S|} \cdot \text{SD}(S_v)$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\text{SD}(S)$</span><span class="comp-desc"><strong>Standard deviation</strong> of the target variable in set $S$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\text{SDR}$</span><span class="comp-desc"><strong>Standard deviation reduction</strong> — analogous to IG but for continuous targets</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-svm">
+        <div class="formula-group-title">Support Vector Machines</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Hyperplane Equation &amp; Decision Function</span>
+            <span class="formula-tag">Unit II · SVM</span>
+          </div>
+          <div class="formula-eq">
+            $$\mathbf{w}^\top \mathbf{x} + b = 0 \qquad f(\mathbf{x}) = \text{sign}(\mathbf{w}^\top \mathbf{x} + b)$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\mathbf{w}$</span><span class="comp-desc"><strong>Weight vector</strong> — normal to the hyperplane</span></div>
+            <div class="comp-row"><span class="comp-sym">$b$</span><span class="comp-desc"><strong>Bias</strong> — shifts the hyperplane away from the origin</span></div>
+            <div class="comp-row"><span class="comp-sym">$\text{sign}(\cdot)$</span><span class="comp-desc"><strong>Sign function</strong> — outputs $+1$ or $-1$ (the predicted class)</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Margin &amp; Optimisation Objective</span>
+            <span class="formula-tag">Unit II · SVM</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{Margin} = \frac{2}{\|\mathbf{w}\|} \qquad \text{Minimize } \frac{1}{2}\|\mathbf{w}\|^2 \text{ subject to } y_i(\mathbf{w}^\top \mathbf{x}_i + b) \geq 1$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\|\mathbf{w}\|$</span><span class="comp-desc"><strong>Euclidean norm</strong> of the weight vector</span></div>
+            <div class="comp-row"><span class="comp-sym">$\frac{2}{\|\mathbf{w}\|}$</span><span class="comp-desc"><strong>Margin width</strong> — maximised by minimising $\|\mathbf{w}\|$</span></div>
+            <div class="comp-row"><span class="comp-sym">$y_i$</span><span class="comp-desc"><strong>True class label</strong> for sample $i$ — either $+1$ or $-1$</span></div>
+            <div class="comp-row"><span class="comp-sym">$y_i(\mathbf{w}^\top \mathbf{x}_i + b) \geq 1$</span><span class="comp-desc"><strong>Constraint</strong> — each point must be on the correct side of the margin boundary</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">RBF Kernel</span>
+            <span class="formula-tag">Unit II · SVM Kernel</span>
+          </div>
+          <div class="formula-eq">
+            $$K(\mathbf{x}, \mathbf{y}) = \exp\!\left(-\gamma\,\|\mathbf{x} - \mathbf{y}\|^2\right)$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$K(\mathbf{x},\mathbf{y})$</span><span class="comp-desc"><strong>Kernel value</strong> — similarity of $\mathbf{x}$ and $\mathbf{y}$ in an infinite-dimensional space</span></div>
+            <div class="comp-row"><span class="comp-sym">$\gamma$</span><span class="comp-desc"><strong>Bandwidth parameter</strong> — higher $\gamma$ = tighter, more local influence</span></div>
+            <div class="comp-row"><span class="comp-sym">$\|\mathbf{x}-\mathbf{y}\|^2$</span><span class="comp-desc"><strong>Squared Euclidean distance</strong> between the two points</span></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="ref-details" id="formulas-unit3">
+      <summary>
+        <span>Unit III — Design &amp; Analysis of ML Experiments</span>
+        <span class="ref-summary-sub">Metrics · Cross-validation · Statistical tests</span>
+      </summary>
+      <div class="formula-group" id="f-confusion">
+        <div class="formula-group-title">Confusion Matrix Layout</div>
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Confusion Matrix (Binary Classification)</span>
+            <span class="formula-tag">Unit III · Evaluation</span>
+          </div>
+          <div class="formula-eq">
+            $$\begin{array}{c|cc} & \textbf{Predicted +} & \textbf{Predicted -} \\ \hline \textbf{Actual +} & \text{TP} & \text{FN} \\ \textbf{Actual -} & \text{FP} & \text{TN} \end{array}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">TP</span><span class="comp-desc"><strong>True Positive</strong> — actual positive, predicted positive ✓</span></div>
+            <div class="comp-row"><span class="comp-sym">TN</span><span class="comp-desc"><strong>True Negative</strong> — actual negative, predicted negative ✓</span></div>
+            <div class="comp-row"><span class="comp-sym">FP</span><span class="comp-desc"><strong>False Positive</strong> (Type I error) — actual negative, predicted positive ✗</span></div>
+            <div class="comp-row"><span class="comp-sym">FN</span><span class="comp-desc"><strong>False Negative</strong> (Type II error) — actual positive, predicted negative ✗</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-metrics">
+        <div class="formula-group-title">Classifier Performance Metrics</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Accuracy, Precision, Recall, F1</span>
+            <span class="formula-tag">Unit III · Metrics</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}$$
+            $$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} \qquad \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
+            $$F_1 = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">Precision</span><span class="comp-desc"><strong>Of all predicted positives</strong>, what fraction are actually positive?</span></div>
+            <div class="comp-row"><span class="comp-sym">Recall</span><span class="comp-desc"><strong>Of all actual positives</strong>, what fraction did the model catch? (= Sensitivity = TPR)</span></div>
+            <div class="comp-row"><span class="comp-sym">$F_1$</span><span class="comp-desc"><strong>Harmonic mean</strong> of Precision and Recall — penalises large gaps between the two</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Specificity &amp; False Positive Rate (ROC axes)</span>
+            <span class="formula-tag">Unit III · ROC</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{Specificity (TNR)} = \frac{\text{TN}}{\text{TN} + \text{FP}} \qquad \text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}} = 1 - \text{Specificity}$$
+            $$\underbrace{\text{TPR}}_{\text{ROC } y\text{-axis}} = \text{Recall} \qquad \underbrace{\text{FPR}}_{\text{ROC } x\text{-axis}} = 1 - \text{Specificity}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">TNR</span><span class="comp-desc"><strong>True Negative Rate</strong> — how well the model identifies negatives</span></div>
+            <div class="comp-row"><span class="comp-sym">FPR</span><span class="comp-desc"><strong>False Positive Rate</strong> — $x$-axis of ROC curve; lower is better</span></div>
+            <div class="comp-row"><span class="comp-sym">AUC</span><span class="comp-desc"><strong>Area Under ROC Curve</strong> — 1.0 = perfect, 0.5 = random</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-ttest">
+        <div class="formula-group-title">Paired t-Test</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Paired t-Test Statistic</span>
+            <span class="formula-tag">Unit III · Hypothesis Test</span>
+          </div>
+          <div class="formula-eq">
+            $$\bar{d} = \frac{1}{n}\sum_{i=1}^n d_i \qquad s_d = \sqrt{\frac{\sum_{i=1}^n (d_i - \bar{d})^2}{n-1}} \qquad t = \frac{\bar{d}}{s_d / \sqrt{n}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$d_i$</span><span class="comp-desc"><strong>Difference</strong> in performance between Model A and Model B on fold $i$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\bar{d}$</span><span class="comp-desc"><strong>Mean difference</strong> across all $n$ folds</span></div>
+            <div class="comp-row"><span class="comp-sym">$s_d$</span><span class="comp-desc"><strong>Sample standard deviation</strong> of the differences</span></div>
+            <div class="comp-row"><span class="comp-sym">$t$</span><span class="comp-desc"><strong>t-statistic</strong> — compare $|t|$ to critical value $t^*$ at $n-1$ degrees of freedom</span></div>
+            <div class="comp-row"><span class="comp-sym">$n$</span><span class="comp-desc"><strong>Number of folds</strong></span></div>
+            <div class="comp-row"><span class="comp-sym">$|t| \geq t^*$</span><span class="comp-desc"><strong>Reject $H_0$</strong> — statistically significant difference exists</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-mcnemar">
+        <div class="formula-group-title">McNemar's Test</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">McNemar's Chi-Squared Statistic</span>
+            <span class="formula-tag">Unit III · Hypothesis Test</span>
+          </div>
+          <div class="formula-eq">
+            $$\chi^2 = \frac{(n_{01} - n_{10})^2}{n_{01} + n_{10}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$n_{01}$</span><span class="comp-desc"><strong>Classifier A wrong, B correct</strong> (off-diagonal count)</span></div>
+            <div class="comp-row"><span class="comp-sym">$n_{10}$</span><span class="comp-desc"><strong>Classifier A correct, B wrong</strong> (other off-diagonal count)</span></div>
+            <div class="comp-row"><span class="comp-sym">$\chi^2 > 3.841$</span><span class="comp-desc"><strong>Reject $H_0$</strong> at $\alpha=0.05$ (1 degree of freedom)</span></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="ref-details" id="formulas-unit4">
+      <summary>
+        <span>Unit IV — Ensemble Techniques &amp; Unsupervised Learning</span>
+        <span class="ref-summary-sub">AdaBoost · K-Means · PCA</span>
+      </summary>
+      <div class="formula-group" id="f-adaboost">
+        <div class="formula-group-title">AdaBoost</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">AdaBoost Error Rate &amp; Model Weight</span>
+            <span class="formula-tag">Unit IV · Boosting</span>
+          </div>
+          <div class="formula-eq">
+            $$\varepsilon_t = \sum_{i=1}^n w_i \cdot \mathbf{1}[y_i \neq h_t(\mathbf{x}_i)] \qquad \alpha_t = \frac{1}{2}\ln\!\left(\frac{1-\varepsilon_t}{\varepsilon_t}\right)$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$w_i$</span><span class="comp-desc"><strong>Weight of sample $i$</strong> — starts at $1/n$, increases for misclassified samples</span></div>
+            <div class="comp-row"><span class="comp-sym">$\varepsilon_t$</span><span class="comp-desc"><strong>Weighted error rate</strong> of weak learner $h_t$ — must be $< 0.5$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\alpha_t$</span><span class="comp-desc"><strong>Model weight</strong> — high $\alpha$ for accurate learners; low $\alpha$ for near-random ones</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{1}[\cdot]$</span><span class="comp-desc"><strong>Indicator function</strong> — 1 if sample $i$ is misclassified, 0 otherwise</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Sample Weight Update &amp; Final Prediction</span>
+            <span class="formula-tag">Unit IV · Boosting</span>
+          </div>
+          <div class="formula-eq">
+            $$w_i \leftarrow w_i \cdot \exp(-\alpha_t \, y_i \, h_t(\mathbf{x}_i)) \qquad H(\mathbf{x}) = \text{sign}\!\left(\sum_t \alpha_t \, h_t(\mathbf{x})\right)$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\exp(-\alpha_t y_i h_t)$</span><span class="comp-desc"><strong>Update factor</strong> — $> 1$ for misclassified samples (weight up), $< 1$ for correct (weight down)</span></div>
+            <div class="comp-row"><span class="comp-sym">$H(\mathbf{x})$</span><span class="comp-desc"><strong>Final ensemble prediction</strong> — weighted majority vote of all $T$ weak learners</span></div>
+            <div class="comp-row"><span class="comp-sym">$\text{sign}(\cdot)$</span><span class="comp-desc"><strong>Sign function</strong> — converts the weighted sum to $+1$ or $-1$</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-kmeans">
+        <div class="formula-group-title">K-Means Clustering</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Centroid Update &amp; WCSS Objective</span>
+            <span class="formula-tag">Unit IV · Clustering</span>
+          </div>
+          <div class="formula-eq">
+            $$\boldsymbol{\mu}_k = \frac{1}{|C_k|}\sum_{\mathbf{x}_i \in C_k} \mathbf{x}_i \qquad \text{WCSS} = \sum_{k=1}^K \sum_{\mathbf{x}_i \in C_k} \|\mathbf{x}_i - \boldsymbol{\mu}_k\|^2$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\boldsymbol{\mu}_k$</span><span class="comp-desc"><strong>Centroid of cluster $k$</strong> — mean position of all points in that cluster</span></div>
+            <div class="comp-row"><span class="comp-sym">$C_k$</span><span class="comp-desc"><strong>Set of points</strong> assigned to cluster $k$</span></div>
+            <div class="comp-row"><span class="comp-sym">$|C_k|$</span><span class="comp-desc"><strong>Number of points</strong> in cluster $k$</span></div>
+            <div class="comp-row"><span class="comp-sym">WCSS</span><span class="comp-desc"><strong>Within-Cluster Sum of Squares</strong> — the objective K-Means minimises; lower is more compact</span></div>
+            <div class="comp-row"><span class="comp-sym">$K$</span><span class="comp-desc"><strong>Number of clusters</strong> — chosen beforehand (use the Elbow method)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-pca">
+        <div class="formula-group-title">Principal Component Analysis (PCA)</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Covariance Matrix</span>
+            <span class="formula-tag">Unit IV · PCA</span>
+          </div>
+          <div class="formula-eq">
+            $$\text{Cov}(X_j, X_l) = \frac{\sum_{i=1}^n (x_{ij} - \bar{x}_j)(x_{il} - \bar{x}_l)}{n-1} \qquad \mathbf{C} = \frac{1}{n-1}\tilde{\mathbf{X}}^\top \tilde{\mathbf{X}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\mathbf{C}$</span><span class="comp-desc"><strong>Covariance matrix</strong> — symmetric $p \times p$ matrix encoding pairwise feature variance</span></div>
+            <div class="comp-row"><span class="comp-sym">$\tilde{\mathbf{X}}$</span><span class="comp-desc"><strong>Mean-centred data matrix</strong> — each column has its mean subtracted</span></div>
+            <div class="comp-row"><span class="comp-sym">$\bar{x}_j$</span><span class="comp-desc"><strong>Mean of feature $j$</strong></span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Eigendecomposition &amp; Projection</span>
+            <span class="formula-tag">Unit IV · PCA</span>
+          </div>
+          <div class="formula-eq">
+            $$\mathbf{C}\mathbf{v} = \lambda\mathbf{v} \quad \Longleftrightarrow \quad \det(\mathbf{C} - \lambda\mathbf{I}) = 0 \qquad \mathbf{Z} = \tilde{\mathbf{X}}\,\mathbf{V}_k$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$\lambda$</span><span class="comp-desc"><strong>Eigenvalue</strong> — variance explained by the corresponding principal component</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{v}$</span><span class="comp-desc"><strong>Eigenvector</strong> — direction of the principal component in feature space</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{I}$</span><span class="comp-desc"><strong>Identity matrix</strong></span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{V}_k$</span><span class="comp-desc"><strong>Top $k$ eigenvectors</strong> stacked as columns (selected by largest eigenvalues)</span></div>
+            <div class="comp-row"><span class="comp-sym">$\mathbf{Z}$</span><span class="comp-desc"><strong>Projected data</strong> — original data in the new $k$-dimensional PCA space</span></div>
+            <div class="comp-row"><span class="comp-sym">Explained variance</span><span class="comp-desc">$= \lambda_j \big/ \sum_j \lambda_j$ — fraction of total variance captured by PC $j$</span></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="ref-details" id="formulas-unit5">
+      <summary>
+        <span>Unit V — Reinforcement Learning</span>
+        <span class="ref-summary-sub">MDP · Q-Learning · Bellman · TD</span>
+      </summary>
+      <div class="formula-group" id="f-bellman">
+        <div class="formula-group-title">Markov Decision Process &amp; Bellman Equations</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">State Value Function — Bellman Expectation</span>
+            <span class="formula-tag">Unit V · MDP</span>
+          </div>
+          <div class="formula-eq">
+            $$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a)\left[R(s,a,s') + \gamma\, V^\pi(s')\right]$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$V^\pi(s)$</span><span class="comp-desc"><strong>State value</strong> — expected cumulative reward when in state $s$ following policy $\pi$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\pi(a|s)$</span><span class="comp-desc"><strong>Policy</strong> — probability of choosing action $a$ in state $s$</span></div>
+            <div class="comp-row"><span class="comp-sym">$P(s'|s,a)$</span><span class="comp-desc"><strong>Transition probability</strong> — probability of landing in state $s'$ from $s$ via action $a$</span></div>
+            <div class="comp-row"><span class="comp-sym">$R(s,a,s')$</span><span class="comp-desc"><strong>Reward</strong> received after transitioning from $s$ to $s'$ via $a$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\gamma$</span><span class="comp-desc"><strong>Discount factor</strong> $\in [0,1]$ — how much future rewards are worth relative to immediate ones; $\gamma=0$ is myopic, $\gamma \to 1$ is far-sighted</span></div>
+            <div class="comp-row"><span class="comp-sym">$s'$</span><span class="comp-desc"><strong>Next state</strong> after the transition</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Optimal State Value &amp; Q-Value Function</span>
+            <span class="formula-tag">Unit V · MDP</span>
+          </div>
+          <div class="formula-eq">
+            $$V^*(s) = \max_a \sum_{s'} P(s'|s,a)\left[R(s,a,s') + \gamma\, V^*(s')\right]$$
+            $$Q^\pi(s,a) = \sum_{s'} P(s'|s,a)\left[R(s,a,s') + \gamma \sum_{a'}\pi(a'|s')\,Q^\pi(s',a')\right]$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$V^*(s)$</span><span class="comp-desc"><strong>Optimal state value</strong> — best possible cumulative reward from state $s$</span></div>
+            <div class="comp-row"><span class="comp-sym">$Q^\pi(s,a)$</span><span class="comp-desc"><strong>Action-value function</strong> — expected cumulative reward of taking action $a$ in state $s$ then following $\pi$</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-qlearn">
+        <div class="formula-group-title">Q-Learning Update Rule</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">Q-Learning Update (Off-Policy TD Control)</span>
+            <span class="formula-tag">Unit V · Q-Learning</span>
+          </div>
+          <div class="formula-eq">
+            $$Q(s,a) \leftarrow Q(s,a) + \alpha \underbrace{\Big[R + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big]}_{\text{TD Error}}$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$Q(s,a)$</span><span class="comp-desc"><strong>Current Q-value</strong> of state-action pair $(s,a)$ — stored in the Q-table</span></div>
+            <div class="comp-row"><span class="comp-sym">$\alpha$</span><span class="comp-desc"><strong>Learning rate</strong> $\in (0,1]$ — how much to update; high = fast but unstable, low = slow but stable</span></div>
+            <div class="comp-row"><span class="comp-sym">$R$</span><span class="comp-desc"><strong>Immediate reward</strong> received after taking action $a$ in state $s$</span></div>
+            <div class="comp-row"><span class="comp-sym">$\gamma$</span><span class="comp-desc"><strong>Discount factor</strong> — weight given to future rewards</span></div>
+            <div class="comp-row"><span class="comp-sym">$\max_{a'} Q(s',a')$</span><span class="comp-desc"><strong>Best Q-value in the next state</strong> $s'$ — the "greedy" look-ahead (off-policy: always takes best, not what policy would do)</span></div>
+            <div class="comp-row"><span class="comp-sym">TD Error</span><span class="comp-desc"><strong>Temporal Difference Error</strong> — the gap between the TD target and the current estimate; drives the update</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-group" id="f-td">
+        <div class="formula-group-title">Temporal Difference (TD) Learning</div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-name">TD(0) Value Update</span>
+            <span class="formula-tag">Unit V · TD Learning</span>
+          </div>
+          <div class="formula-eq">
+            $$V(s) \leftarrow V(s) + \alpha\left[\underbrace{r + \gamma V(s')}_{\text{TD target}} - V(s)\right]$$
+          </div>
+          <div class="formula-components">
+            <div class="comp-row"><span class="comp-sym">$V(s)$</span><span class="comp-desc"><strong>Current value estimate</strong> of state $s$</span></div>
+            <div class="comp-row"><span class="comp-sym">$r$</span><span class="comp-desc"><strong>Reward</strong> received in the current step</span></div>
+            <div class="comp-row"><span class="comp-sym">$V(s')$</span><span class="comp-desc"><strong>Bootstrap estimate</strong> of next state — used before the episode ends (unlike Monte Carlo)</span></div>
+            <div class="comp-row"><span class="comp-sym">TD target</span><span class="comp-desc">$r + \gamma V(s')$ — what we think $V(s)$ should be, based on one step of experience</span></div>
+            <div class="comp-row"><span class="comp-sym">$r + \gamma V(s') - V(s)$</span><span class="comp-desc"><strong>TD Error</strong> — positive means the next state was better than expected; negative means worse</span></div>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section class="unit-section" id="algorithms">
+    <div class="unit-banner" style="border-left: 4px solid var(--accent3);">
+      <div class="unit-num" style="background:rgba(16,185,129,0.12);color:var(--accent3);border-color:rgba(16,185,129,0.2)">ALGORITHMS</div>
+      <div>
+        <div><h2>Algorithm Index</h2></div>
+        <p>Each algorithm with its core equation(s) and what it does.</p>
+      </div>
+    </div>
+
+    <details class="algo-card" id="algo-linear-regression">
+      <summary class="algo-card-header">
+        <span class="algo-num">01</span>
+        <span class="algo-name">Linear Regression</span>
+        <span class="algo-type">Supervised · Regression</span>
+        <span class="algo-unit-tag" style="background:#0b1f3a;color:#7fb7ff;border:1px solid #1f3f6a">Unit II</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Fits a straight line (or hyperplane) to minimise the sum of squared residuals. The Normal Equation gives the exact closed-form solution.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$\hat{Y} = \beta_0 + \beta_1 X \qquad \beta_1 = \frac{\sum(X_i-\bar{X})(Y_i-\bar{Y})}{\sum(X_i-\bar{X})^2} \qquad \beta_0 = \bar{Y} - \beta_1\bar{X}$$
+          <p><strong>Multiple features (matrix form):</strong> $\boldsymbol{\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-logistic-regression">
+      <summary class="algo-card-header">
+        <span class="algo-num">02</span>
+        <span class="algo-name">Logistic Regression</span>
+        <span class="algo-type">Supervised · Classification</span>
+        <span class="algo-unit-tag" style="background:#0b1f3a;color:#7fb7ff;border:1px solid #1f3f6a">Unit II</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Maps any linear combination of inputs to a probability in (0,1) via the sigmoid function, then applies a threshold to classify.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$P(y=1|\mathbf{x}) = \sigma(z) = \frac{1}{1+e^{-z}}, \qquad z = \beta_0 + \beta_1 X_1 + \cdots$$
+          <p><strong>Classify:</strong> predict 1 if $P \geq \theta$, else 0.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-knn">
+      <summary class="algo-card-header">
+        <span class="algo-num">03</span>
+        <span class="algo-name">K-Nearest Neighbors (KNN)</span>
+        <span class="algo-type">Supervised · Lazy Learner</span>
+        <span class="algo-unit-tag" style="background:#0b1f3a;color:#7fb7ff;border:1px solid #1f3f6a">Unit II</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Stores all training points. For a new query, computes distances, picks the $K$ closest neighbours, and returns the majority class (classification) or mean (regression).</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$d_E(\mathbf{a},\mathbf{b}) = \sqrt{\sum_j(a_j-b_j)^2} \qquad d_M(\mathbf{a},\mathbf{b}) = \sum_j|a_j-b_j|$$
+          <p><strong>Tip:</strong> use odd $K$; rule-of-thumb $K \approx \sqrt{n}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-id3">
+      <summary class="algo-card-header">
+        <span class="algo-num">04</span>
+        <span class="algo-name">Decision Tree — ID3</span>
+        <span class="algo-type">Supervised · Tree</span>
+        <span class="algo-unit-tag" style="background:#0b1f3a;color:#7fb7ff;border:1px solid #1f3f6a">Unit II</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Greedily selects the attribute that reduces entropy the most (maximum Information Gain) at each node until leaves are pure or no attributes remain.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$H(S) = -\sum_c p_c\log_2 p_c \qquad \text{IG}(S,A) = H(S) - \sum_v \frac{|S_v|}{|S|}H(S_v)$$
+          <p><strong>Regression trees</strong> use SDR = $\text{SD}(S) - \sum_v \frac{|S_v|}{|S|}\text{SD}(S_v)$ instead.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-svm">
+      <summary class="algo-card-header">
+        <span class="algo-num">05</span>
+        <span class="algo-name">Support Vector Machine (SVM)</span>
+        <span class="algo-type">Supervised · Margin Classifier</span>
+        <span class="algo-unit-tag" style="background:#0b1f3a;color:#7fb7ff;border:1px solid #1f3f6a">Unit II</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Finds the hyperplane maximising the margin between two classes. Non-linearly-separable data is handled by kernel functions that map features to a higher-dimensional space.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$\text{Minimise } \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf{w}^\top\mathbf{x}_i+b) \geq 1$$
+          $$\text{Margin} = \frac{2}{\|\mathbf{w}\|} \qquad K_\text{RBF}(\mathbf{x},\mathbf{y}) = \exp(-\gamma\|\mathbf{x}-\mathbf{y}\|^2)$$
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-ttest">
+      <summary class="algo-card-header">
+        <span class="algo-num">06</span>
+        <span class="algo-name">Paired t-Test (Model Comparison)</span>
+        <span class="algo-type">Statistical Test</span>
+        <span class="algo-unit-tag" style="background:#0d2a20;color:#7dd4a8;border:1px solid #1f5b45">Unit III</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Tests whether the mean performance difference between two models evaluated on the same $K$ folds is statistically significant.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$t = \frac{\bar{d}}{s_d/\sqrt{n}} \qquad s_d = \sqrt{\frac{\sum_i(d_i-\bar{d})^2}{n-1}}$$
+          <p><strong>Reject $H_0$</strong> (difference is real) if $|t| \geq t^*_{n-1,\, \alpha/2}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-adaboost">
+      <summary class="algo-card-header">
+        <span class="algo-num">07</span>
+        <span class="algo-name">AdaBoost</span>
+        <span class="algo-type">Ensemble · Boosting</span>
+        <span class="algo-unit-tag" style="background:#2a1d0b;color:#f6c98a;border:1px solid #5c3f18">Unit IV</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Trains weak learners sequentially. After each round, misclassified samples get higher weight, forcing the next learner to focus on the hard cases. Final answer is a weighted vote.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$\varepsilon_t = \sum_i w_i\,\mathbf{1}[y_i \neq h_t(\mathbf{x}_i)] \qquad \alpha_t = \tfrac{1}{2}\ln\!\tfrac{1-\varepsilon_t}{\varepsilon_t}$$
+          $$w_i \leftarrow w_i\exp(-\alpha_t y_i h_t(\mathbf{x}_i)) \qquad H(\mathbf{x}) = \text{sign}\!\left(\textstyle\sum_t \alpha_t h_t(\mathbf{x})\right)$$
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-kmeans">
+      <summary class="algo-card-header">
+        <span class="algo-num">08</span>
+        <span class="algo-name">K-Means Clustering</span>
+        <span class="algo-type">Unsupervised · Clustering</span>
+        <span class="algo-unit-tag" style="background:#2a1d0b;color:#f6c98a;border:1px solid #5c3f18">Unit IV</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Iteratively assigns each point to the nearest centroid, then recomputes centroids as cluster means until assignments stop changing.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$\text{Assignment: } c_i = \arg\min_k \|\mathbf{x}_i - \boldsymbol{\mu}_k\|$$
+          $$\text{Update: } \boldsymbol{\mu}_k = \frac{1}{|C_k|}\sum_{\mathbf{x}_i \in C_k}\mathbf{x}_i \qquad \text{Minimise WCSS} = \sum_k\sum_{i \in C_k}\|\mathbf{x}_i - \boldsymbol{\mu}_k\|^2$$
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-pca">
+      <summary class="algo-card-header">
+        <span class="algo-num">09</span>
+        <span class="algo-name">Principal Component Analysis (PCA)</span>
+        <span class="algo-type">Unsupervised · Dimensionality Reduction</span>
+        <span class="algo-unit-tag" style="background:#2a1d0b;color:#f6c98a;border:1px solid #5c3f18">Unit IV</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Finds orthogonal axes (principal components) of maximum variance via eigendecomposition of the covariance matrix, then projects data onto the top $k$ components.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$\mathbf{C} = \frac{1}{n-1}\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}} \qquad \det(\mathbf{C}-\lambda\mathbf{I})=0 \qquad \mathbf{Z} = \tilde{\mathbf{X}}\,\mathbf{V}_k$$
+          <p><strong>Explained variance of PC $j$:</strong> $\lambda_j \,/\, \sum_j \lambda_j$. Keep enough PCs to reach ≥ 95%.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-qlearning">
+      <summary class="algo-card-header">
+        <span class="algo-num">10</span>
+        <span class="algo-name">Q-Learning</span>
+        <span class="algo-type">RL · Model-Free · Off-Policy</span>
+        <span class="algo-unit-tag" style="background:#2a0f12;color:#f5a0a0;border:1px solid #5c1b22">Unit V</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Learns the optimal action-value function $Q^*(s,a)$ without knowing the environment model. Each transition updates the Q-table using a TD bootstrap from the greedy next-state value.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$Q(s,a) \leftarrow Q(s,a) + \alpha\Big[R + \gamma\max_{a'}Q(s',a') - Q(s,a)\Big]$$
+          <p><strong>TD target:</strong> $R + \gamma\max_{a'}Q(s',a')$ &nbsp;|&nbsp; <strong>TD error:</strong> target $- Q(s,a)$</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="algo-card" id="algo-td">
+      <summary class="algo-card-header">
+        <span class="algo-num">11</span>
+        <span class="algo-name">Temporal Difference Learning — TD(0)</span>
+        <span class="algo-type">RL · Model-Free · Policy Evaluation</span>
+        <span class="algo-unit-tag" style="background:#2a0f12;color:#f5a0a0;border:1px solid #5c1b22">Unit V</span>
+      </summary>
+      <div class="algo-body">
+        <p class="algo-desc">Updates the state-value estimate after every step (not at episode end like Monte Carlo) by bootstrapping from the next-state estimate.</p>
+        <div class="algo-formulas-label">Core Equations</div>
+        <div class="algo-eq">
+          $$V(s) \leftarrow V(s) + \alpha\Big[r + \gamma V(s') - V(s)\Big]$$
+          <p><strong>TD target:</strong> $r + \gamma V(s')$ &nbsp;|&nbsp; <strong>TD error</strong> (also called $\delta$): $r + \gamma V(s') - V(s)$</p>
+        </div>
+      </div>
+    </details>
+  </section>
+  </div>
+  </div>
+
   <div id="page-qpapers" class="page">
   <div class="content-wrap">
   <!-- ═══════════════ QUESTION PAPERS ═══════════════ -->
@@ -3213,6 +4214,8 @@ function pageFromTarget(id) {
   if (id === 'unit3' || id.startsWith('u3-')) return 'unit3';
   if (id === 'unit4' || id.startsWith('u4-')) return 'unit4';
   if (id === 'unit5' || id.startsWith('u5-')) return 'unit5';
+  if (id === 'formulas' || id.startsWith('formulas-') || id.startsWith('f-')) return 'reference';
+  if (id === 'algorithms' || id.startsWith('algo-')) return 'reference';
   if (id === 'question-papers' || id.startsWith('qp-')) return 'qpapers';
   if (id === 'sources') return 'sources';
   return 'overview';
